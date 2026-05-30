@@ -9,6 +9,10 @@
       "import": "./src/index.ts",
       "default": "./src/index.ts"
     },
+    "./tailwind.theme.css": {
+      "import": "./src/tailwind.theme.css",
+      "default": "./src/tailwind.theme.css"
+    },
     "./package.json": "./package.json"
   }
 }

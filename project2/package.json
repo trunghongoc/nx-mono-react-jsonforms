@@ -24,7 +24,7 @@
             "project2/src/assets"
           ],
           "styles": [
-            "project2/src/styles.scss"
+            "project2/src/styles.css"
           ],
           "scripts": [],
           "webpackConfig": "project2/webpack.config.ts"
