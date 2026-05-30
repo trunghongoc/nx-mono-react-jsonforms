@@ -8,6 +8,12 @@
     },
     {
       "path": "./apps/host"
+    },
+    {
+      "path": "./project1-e2e"
+    },
+    {
+      "path": "./project1"
     }
   ]
 }
