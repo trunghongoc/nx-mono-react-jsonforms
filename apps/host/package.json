@@ -5,5 +5,80 @@
   "devDependencies": {
     "project1": "workspace:*",
     "project2": "workspace:*"
+  },
+  "nx": {
+    "name": "@nx-mono-react-jsonforms/host",
+    "sourceRoot": "apps/host/src",
+    "targets": {
+      "build": {
+        "executor": "@nx/webpack:webpack",
+        "outputs": ["{options.outputPath}"],
+        "defaultConfiguration": "production",
+        "options": {
+          "compiler": "babel",
+          "outputPath": "apps/host/dist",
+          "index": "apps/host/src/index.html",
+          "baseHref": "/",
+          "main": "apps/host/src/main.ts",
+          "tsConfig": "apps/host/tsconfig.app.json",
+          "assets": ["apps/host/src/favicon.ico", "apps/host/src/assets"],
+          "styles": ["apps/host/src/styles.css"],
+          "scripts": [],
+          "webpackConfig": "apps/host/webpack.config.ts"
+        },
+        "configurations": {
+          "development": {
+            "extractLicenses": false,
+            "optimization": false,
+            "sourceMap": true,
+            "vendorChunk": true
+          },
+          "production": {
+            "optimization": true,
+            "outputHashing": "all",
+            "sourceMap": false,
+            "namedChunks": false,
+            "extractLicenses": true,
+            "vendorChunk": false
+          }
+        },
+        "dependsOn": ["^build", "typecheck"]
+      },
+      "serve": {
+        "executor": "@nx/react:module-federation-dev-server",
+        "defaultConfiguration": "development",
+        "options": {
+          "buildTarget": "@nx-mono-react-jsonforms/host:build",
+          "hmr": true,
+          "port": 4200,
+          "devRemotes": ["project1", "project2"]
+        },
+        "configurations": {
+          "development": {
+            "buildTarget": "@nx-mono-react-jsonforms/host:build:development"
+          },
+          "production": {
+            "buildTarget": "@nx-mono-react-jsonforms/host:build:production",
+            "hmr": false
+          }
+        },
+        "dependsOn": ["typecheck"]
+      },
+      "serve-static": {
+        "executor": "@nx/react:module-federation-static-server",
+        "defaultConfiguration": "production",
+        "options": {
+          "serveTarget": "@nx-mono-react-jsonforms/host:serve"
+        },
+        "configurations": {
+          "development": {
+            "serveTarget": "@nx-mono-react-jsonforms/host:serve:development"
+          },
+          "production": {
+            "serveTarget": "@nx-mono-react-jsonforms/host:serve:production"
+          }
+        }
+      }
+    }
   }
 }

@@ -62,7 +62,7 @@
         "options": {
           "buildTarget": "project1:build",
           "hmr": true,
-          "port": 4200
+          "port": 4201
         },
         "configurations": {
           "development": {

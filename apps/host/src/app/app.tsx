@@ -1,6 +1,7 @@
 // Uncomment this line to use CSS modules
 // import styles from './app.module.scss';
-import NxWelcome from './nx-welcome';
+import React, { Suspense } from 'react';
+// import NxWelcome from './nx-welcome';
 
 import { Route, Routes, Link } from 'react-router-dom';
 
@@ -11,7 +12,7 @@ const Project1 = React.lazy(() => import('project1/Module'));
 export function App() {
   return (
     <div>
-      <NxWelcome title="@nx-mono-react-jsonforms/host" />
+      {/* <NxWelcome title="@nx-mono-react-jsonforms/host" /> */}
 
       {/* START: routes */}
       {/* These routes and navigation have been generated for you */}
@@ -45,8 +46,22 @@ export function App() {
             </div>
           }
         />
-        <Route path="/project2" element={<Project2 />} />
-        <Route path="/project1" element={<Project1 />} />
+        <Route
+          path="/project2"
+          element={
+            <Suspense fallback={<div>Loading Project2...</div>}>
+              <Project2 />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/project1"
+          element={
+            <Suspense fallback={<div>Loading Project1...</div>}>
+              <Project1 />
+            </Suspense>
+          }
+        />
         <Route
           path="/page-2"
           element={
