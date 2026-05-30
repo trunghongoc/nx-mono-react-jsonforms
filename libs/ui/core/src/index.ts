@@ -3,6 +3,8 @@ export * from './lib/button';
 export * from './lib/divider';
 export * from './lib/icon';
 export * from './lib/input';
+export * from './lib/overlay';
 export * from './lib/popover';
+export * from './lib/tooltip';
 export * from './lib/text';
 export { tokens, type Tokens } from './tokens.config';
