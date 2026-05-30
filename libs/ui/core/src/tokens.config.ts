@@ -328,6 +328,17 @@ export const tokens = {
       normal: '1.5',
       relaxed: '1.625',
     },
+    textStyle: {
+      heading1: { fontSize: '2.375rem', lineHeight: '2.875rem' },
+      heading2: { fontSize: '1.875rem', lineHeight: '2.375rem' },
+      heading3: { fontSize: '1.5rem', lineHeight: '2rem' },
+      heading4: { fontSize: '1.25rem', lineHeight: '1.75rem' },
+      heading5: { fontSize: '1rem', lineHeight: '1.5625rem' },
+      bodySm: { fontSize: '0.75rem', lineHeight: '1.25rem' },
+      bodyMd: { fontSize: '0.875rem', lineHeight: '1.375rem' },
+      bodyLg: { fontSize: '1rem', lineHeight: '1.5rem' },
+      bodyXl: { fontSize: '1.25rem', lineHeight: '1.75rem' },
+    },
   },
   radius: {
     none: '0',
