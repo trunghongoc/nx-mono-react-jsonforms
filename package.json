@@ -4,7 +4,8 @@
   "license": "MIT",
   "scripts": {
     "storybook:core": "nx storybook @nx-mono-react-jsonforms/core",
-    "build-storybook:core": "nx build-storybook @nx-mono-react-jsonforms/core"
+    "build-storybook:core": "nx build-storybook @nx-mono-react-jsonforms/core",
+    "icons:generate": "node libs/ui/core/scripts/generate-icon-registry.mjs"
   },
   "private": true,
   "dependencies": {

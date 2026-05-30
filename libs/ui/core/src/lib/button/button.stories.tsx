@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import type { ComponentProps, ReactNode } from 'react';
 
+import { Icon } from '../icon';
 import { Button, type ButtonSize, type ButtonType } from './button';
 
 const buttonTypes: ButtonType[] = [
@@ -20,20 +21,6 @@ const buttonStates: { id: ButtonState; label: string }[] = [
   { id: 'disabled', label: 'Disabled' },
   { id: 'loading', label: 'Loading' },
 ];
-
-function PlusIcon() {
-  return (
-    <svg
-      width="1em"
-      height="1em"
-      viewBox="0 0 16 16"
-      fill="currentColor"
-      aria-hidden="true"
-    >
-      <path d="M8 2.5a.5.5 0 0 1 .5.5v4.5H13a.5.5 0 0 1 0 1H8.5V13a.5.5 0 0 1-1 0V8.5H3a.5.5 0 0 1 0-1h4.5V3A.5.5 0 0 1 8 2.5z" />
-    </svg>
-  );
-}
 
 function MatrixSection({
   title,
@@ -237,12 +224,20 @@ export const Danger: Story = {
   },
 };
 
+export const WithIcon: Story = {
+  args: {
+    type: 'primary',
+    icon: <Icon name="plus" />,
+    children: 'Add item',
+  },
+};
+
 export const IconOnly: Story = {
   args: {
     type: 'primary',
     iconOnly: true,
     'aria-label': 'Add',
-    children: <PlusIcon />,
+    children: <Icon name="plus" />,
   },
 };
 
@@ -356,7 +351,7 @@ export const Matrix: Story = {
                 iconOnly
                 aria-label="Add"
               >
-                <PlusIcon />
+                <Icon name="plus" />
               </Button>,
             ],
           }))}
@@ -443,7 +438,7 @@ export const Matrix: Story = {
                 iconOnly
                 aria-label={`${type} ${size}`}
               >
-                <PlusIcon />
+                <Icon name="plus" />
               </Button>
             )),
           }))}
@@ -468,7 +463,7 @@ export const Matrix: Story = {
                 iconOnly
                 aria-label={`${type} ${size} round icon`}
               >
-                <PlusIcon />
+                <Icon name="plus" />
               </Button>
             )),
           }))}
@@ -492,7 +487,7 @@ export const Matrix: Story = {
                 aria-label="Add"
                 {...stateProps(state.id)}
               >
-                <PlusIcon />
+                <Icon name="plus" />
               </Button>,
               <Button
                 key="danger"
@@ -502,7 +497,7 @@ export const Matrix: Story = {
                 aria-label="Add danger"
                 {...stateProps(state.id)}
               >
-                <PlusIcon />
+                <Icon name="plus" />
               </Button>,
               <div
                 key="ghost"
@@ -515,7 +510,7 @@ export const Matrix: Story = {
                   aria-label="Add ghost"
                   {...stateProps(state.id)}
                 >
-                  <PlusIcon />
+                  <Icon name="plus" />
                 </Button>
               </div>,
             ],

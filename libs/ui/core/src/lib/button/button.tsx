@@ -4,6 +4,8 @@ import {
   type ReactNode,
 } from 'react';
 
+import { Icon, type IconSize } from '../icon';
+
 export type ButtonType =
   | 'primary'
   | 'default'
@@ -27,7 +29,7 @@ export interface ButtonProps
 }
 
 const baseClasses =
-  'inline-flex cursor-pointer items-center justify-center gap-2 border font-normal transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-control-outline focus-visible:ring-offset-2';
+  'inline-flex cursor-pointer items-center justify-center gap-2 border font-normal transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-control-outline focus-visible:ring-offset-2 [&_svg]:!text-current';
 
 const solidDisabledClasses =
   'disabled:pointer-events-none disabled:border-border disabled:bg-bg-container-disabled disabled:text-text-disabled';
@@ -45,6 +47,12 @@ const iconOnlySizeClasses: Record<ButtonSize, string> = {
   sm: 'size-6 p-0',
   md: 'size-8 p-0',
   lg: 'size-10 p-0',
+};
+
+const loadingIconSize: Record<ButtonSize, IconSize> = {
+  sm: 'sm',
+  md: 'md',
+  lg: 'lg',
 };
 
 type Appearance = 'default' | 'danger' | 'ghost' | 'ghostDanger';
@@ -235,10 +243,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         {...props}
       >
         {loading ? (
-          <span
-            className="inline-block size-3.5 shrink-0 animate-spin rounded-full border-2 border-current border-t-transparent"
-            aria-hidden="true"
-          />
+          <Icon name="loading" size={loadingIconSize[size]} spin />
         ) : (
           icon
         )}

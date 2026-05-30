@@ -2,3 +2,30 @@
 @import '../src/tailwind.theme.css';
 
 @source '../src/**/*.{ts,tsx}';
+
+html {
+  color-scheme: light;
+}
+
+html[data-theme='dark'] {
+  color-scheme: dark;
+}
+
+#storybook-root {
+  width: 100%;
+}
+
+.sb-show-main.sb-main-centered {
+  align-items: stretch;
+}
+
+.sb-show-main.sb-main-centered > #storybook-root {
+  width: 100%;
+  max-width: 100%;
+}
+
+.sb-show-main,
+.sb-main-padded,
+.docs-story {
+  background-color: var(--color-bg-layout);
+}
