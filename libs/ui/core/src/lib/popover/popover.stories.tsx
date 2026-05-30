@@ -139,26 +139,28 @@ export const DoubleClickTrigger: Story = {
   ),
 };
 
-export const ControlledShow: Story = {
-  render: () => {
-    const [visible, setVisible] = useState(true);
+function ControlledShowDemo() {
+  const [visible, setVisible] = useState(true);
 
-    return (
-      <div className="flex flex-col items-center gap-4">
-        <Popover
-          anchor={<Button type="default">Anchor</Button>}
-          title="Popover title"
-          place="top"
-          show={visible}
-        >
-          {sampleContent}
-        </Popover>
-        <Button type="primary" onClick={() => setVisible((value) => !value)}>
-          {visible ? 'Hide popover' : 'Show popover'}
-        </Button>
-      </div>
-    );
-  },
+  return (
+    <div className="flex flex-col items-center gap-4">
+      <Popover
+        anchor={<Button type="default">Anchor</Button>}
+        title="Popover title"
+        place="top"
+        show={visible}
+      >
+        {sampleContent}
+      </Popover>
+      <Button type="primary" onClick={() => setVisible((value) => !value)}>
+        {visible ? 'Hide popover' : 'Show popover'}
+      </Button>
+    </div>
+  );
+}
+
+export const ControlledShow: Story = {
+  render: () => <ControlledShowDemo />,
 };
 
 export const WithoutTitle: Story = {

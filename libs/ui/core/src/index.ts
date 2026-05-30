@@ -7,4 +7,6 @@ export * from './lib/overlay';
 export * from './lib/popover';
 export * from './lib/tooltip';
 export * from './lib/text';
+export * from './lib/breadcrumb';
+export * from './lib/page-header';
 export { tokens, type Tokens } from './tokens.config';
