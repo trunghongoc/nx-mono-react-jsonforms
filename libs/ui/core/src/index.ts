@@ -2,6 +2,7 @@ export * from './lib/core';
 export * from './lib/button';
 export * from './lib/checkbox';
 export * from './lib/radio';
+export * from './lib/switch';
 export * from './lib/divider';
 export * from './lib/icon';
 export * from './lib/input';
