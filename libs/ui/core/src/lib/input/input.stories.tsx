@@ -1,7 +1,11 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import type { ReactNode } from 'react';
+import { useState, type ReactNode } from 'react';
 
+import { Icon } from '../icon';
+import { EmailInput } from './email-input';
 import { Input, type InputSize, type InputStatus } from './input';
+import { NumberInput } from './number-input';
+import { TextArea } from './textarea';
 
 const inputSizes: InputSize[] = ['sm', 'md', 'lg'];
 const inputStatuses: InputStatus[] = ['error', 'warning', 'success'];
@@ -29,7 +33,7 @@ const meta: Meta<typeof Input> = {
     placeholder: { control: 'text' },
     type: {
       control: 'select',
-      options: ['text', 'password'],
+      options: ['text', 'password', 'textarea'],
     },
   },
   args: {
@@ -140,6 +144,84 @@ export const Statuses: Story = {
   ),
 };
 
+export const WithPrefix: Story = {
+  render: () => (
+    <div className="flex max-w-sm flex-col gap-4">
+      <Input
+        prefix={<Icon name="user" size={16} />}
+        placeholder="Username"
+      />
+      <Input
+        prefix={<Icon name="user" size={16} />}
+        label="Username"
+        placeholder="Enter username"
+        required
+      />
+      <Input
+        prefix="$"
+        placeholder="Amount"
+        defaultValue="100"
+      />
+      <Input
+        prefix={<Icon name="user" size={16} />}
+        placeholder="With status"
+        status="success"
+        defaultValue="valid-user"
+      />
+      <Input
+        prefix={<Icon name="user" size={16} />}
+        type="password"
+        placeholder="Password"
+        defaultValue="secret123"
+      />
+      <Input
+        prefix={<Icon name="user" size={16} />}
+        placeholder="Disabled"
+        disabled
+        defaultValue="readonly"
+      />
+    </div>
+  ),
+};
+
+export const Textarea: Story = {
+  render: () => (
+    <div className="flex max-w-sm flex-col gap-4">
+      <Input
+        type="textarea"
+        placeholder="Description"
+        defaultValue={'Line one\nLine two'}
+      />
+      <TextArea placeholder="Using TextArea component" />
+      <TextArea
+        label="Bio"
+        placeholder="Tell us about yourself"
+        required
+        defaultValue="Short bio text."
+      />
+      {inputSizes.map((size) => (
+        <TextArea
+          key={size}
+          size={size}
+          placeholder={`Size ${size}`}
+          defaultValue={`Textarea size ${size}`}
+        />
+      ))}
+      <TextArea
+        status="success"
+        defaultValue="Valid content"
+        placeholder="With status"
+      />
+      <TextArea
+        prefix={<Icon name="edit" size={16} />}
+        label="Notes"
+        placeholder="Add notes"
+      />
+      <TextArea placeholder="Disabled" disabled defaultValue="Cannot edit" />
+    </div>
+  ),
+};
+
 export const Password: Story = {
   render: () => (
     <div className="flex max-w-sm flex-col gap-4">
@@ -150,6 +232,110 @@ export const Password: Story = {
         defaultValue="secret123"
         disabled
       />
+    </div>
+  ),
+};
+
+export const Emails: Story = {
+  render: () => (
+    <div className="flex max-w-sm flex-col gap-4">
+      <EmailInput placeholder="Enter email" />
+      <EmailInput
+        label="Email"
+        placeholder="name@example.com"
+        required
+        autoComplete="email"
+      />
+      <EmailInput
+        prefix={<Icon name="mail" size={16} />}
+        label="Work email"
+        placeholder="you@company.com"
+        defaultValue="user@example.com"
+      />
+      <EmailInput
+        label="Email"
+        status="error"
+        error="Please enter a valid email address"
+        defaultValue="invalid-email"
+      />
+      <EmailInput
+        placeholder="Disabled"
+        defaultValue="user@example.com"
+        disabled
+      />
+    </div>
+  ),
+};
+
+function AgeInputWithValidation() {
+  const [value, setValue] = useState('16');
+  const age = Number(value);
+  const hasError = value !== '' && !Number.isNaN(age) && age < 18;
+
+  return (
+    <NumberInput
+      label="Age"
+      status={hasError ? 'error' : undefined}
+      error={hasError ? 'Must be at least 18' : undefined}
+      min={18}
+      value={value}
+      onChange={(event) => setValue(event.target.value)}
+    />
+  );
+}
+
+function FormattedAmountInput() {
+  const [value, setValue] = useState('1234567.789');
+
+  return (
+    <div className="flex flex-col gap-1">
+      <NumberInput
+        label="Amount (formatted)"
+        prefix="$"
+        format={{ decimal: 2, round: 'ceil' }}
+        value={value}
+        onChange={(event) => setValue(event.target.value)}
+      />
+      <p className="text-body-sm text-text-secondary">Raw value: {value}</p>
+    </div>
+  );
+}
+
+export const Numbers: Story = {
+  render: () => (
+    <div className="flex max-w-sm flex-col gap-4">
+      <NumberInput placeholder="Enter amount" />
+      <NumberInput
+        label="Quantity"
+        placeholder="0"
+        min={0}
+        max={100}
+        step={1}
+        defaultValue={1}
+        required
+      />
+      <NumberInput
+        prefix="$"
+        placeholder="Price"
+        min={0}
+        step={0.01}
+        defaultValue={99.99}
+      />
+      <FormattedAmountInput />
+      <NumberInput
+        label="Price (floor)"
+        prefix="$"
+        format={{ decimal: 2, round: 'floor' }}
+        defaultValue={1234567.899}
+      />
+      <NumberInput
+        label="Price (no rounding)"
+        prefix="$"
+        format={{ decimal: 2, round: 'none' }}
+        defaultValue={1234567.899}
+      />
+      <AgeInputWithValidation />
+      <NumberInput placeholder="Disabled" defaultValue={42} disabled />
     </div>
   ),
 };
@@ -240,8 +426,71 @@ export const AllVariants: Story = {
         </div>
       </StorySection>
 
+      <StorySection title="Prefix">
+        <div className="flex flex-col gap-3">
+          <Input
+            prefix={<Icon name="user" size={16} />}
+            placeholder="Username"
+          />
+          <Input
+            prefix={<Icon name="user" size={16} />}
+            label="Email"
+            placeholder="Enter email"
+          />
+        </div>
+      </StorySection>
+
+      <StorySection title="Textarea">
+        <div className="flex flex-col gap-3">
+          <Input type="textarea" placeholder="Via Input type=textarea" />
+          <TextArea placeholder="Via TextArea" />
+          {inputSizes.map((size) => (
+            <TextArea key={size} size={size} placeholder={`Size ${size}`} />
+          ))}
+        </div>
+      </StorySection>
+
       <StorySection title="Password">
         <Input type="password" defaultValue="password123" />
+      </StorySection>
+
+      <StorySection title="Email">
+        <div className="flex flex-col gap-3">
+          <EmailInput placeholder="Enter email" />
+          <EmailInput
+            label="Email"
+            placeholder="name@example.com"
+            required
+          />
+          <EmailInput
+            prefix={<Icon name="mail" size={16} />}
+            defaultValue="user@example.com"
+          />
+        </div>
+      </StorySection>
+
+      <StorySection title="Number">
+        <div className="flex flex-col gap-3">
+          <NumberInput placeholder="Enter amount" />
+          <NumberInput
+            label="Quantity"
+            min={0}
+            max={100}
+            defaultValue={1}
+          />
+          <NumberInput
+            prefix="$"
+            min={0}
+            step={0.01}
+            defaultValue={99.99}
+          />
+          <NumberInput
+            label="Formatted amount"
+            prefix="$"
+            format={{ decimal: 2 }}
+            defaultValue={1234567.89}
+          />
+        </div>
       </StorySection>
 
       <StorySection title="Disabled">

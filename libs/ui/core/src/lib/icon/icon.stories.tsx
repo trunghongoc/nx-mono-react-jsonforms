@@ -42,7 +42,7 @@ async function copyToClipboard(text: string): Promise<boolean> {
 
 function useCopyFeedback() {
   const [copiedName, setCopiedName] = useState<string | null>(null);
-  const timeoutRef = useRef<number>();
+  const timeoutRef = useRef<number | undefined>(undefined);
 
   const copyName = useCallback(async (name: string) => {
     if (!(await copyToClipboard(name))) return;
