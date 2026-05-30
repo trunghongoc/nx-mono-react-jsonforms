@@ -1,0 +1,458 @@
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  margin-inline: calc(var(--grid-gutter-x, 0px) / -2);
+  margin-block-start: calc(var(--grid-gutter-y, 0px) / -2);
+}
+
+.rowNoWrap {
+  flex-wrap: nowrap;
+}
+
+.col {
+  box-sizing: border-box;
+  min-height: 1px;
+  position: relative;
+  max-width: 100%;
+  padding-inline: calc(var(--grid-gutter-x, 0px) / 2);
+  padding-block-start: calc(var(--grid-gutter-y, 0px) / 2);
+  order: var(--grid-col-order, 0);
+  flex: 0 0 calc(var(--grid-col-span, 24) / 24 * 100%);
+  max-width: calc(var(--grid-col-span, 24) / 24 * 100%);
+  margin-inline-start: calc(var(--grid-col-offset, 0) / 24 * 100%);
+  inset-inline-start: calc(var(--grid-col-push, 0) / 24 * 100%);
+  inset-inline-end: calc(var(--grid-col-pull, 0) / 24 * 100%);
+}
+
+.colFlex {
+  flex: var(--grid-col-flex);
+  max-width: var(--grid-col-max-width, 100%);
+}
+
+@media (max-width: 575px) {
+  .col {
+    order: var(--grid-col-order-xs, var(--grid-col-order, 0));
+    flex: 0 0 calc(var(--grid-col-span-xs, var(--grid-col-span, 24)) / 24 * 100%);
+    max-width: calc(var(--grid-col-span-xs, var(--grid-col-span, 24)) / 24 * 100%);
+    margin-inline-start: calc(
+      var(--grid-col-offset-xs, var(--grid-col-offset, 0)) / 24 * 100%
+    );
+    inset-inline-start: calc(
+      var(--grid-col-push-xs, var(--grid-col-push, 0)) / 24 * 100%
+    );
+    inset-inline-end: calc(
+      var(--grid-col-pull-xs, var(--grid-col-pull, 0)) / 24 * 100%
+    );
+  }
+
+  .colFlex {
+    flex: var(--grid-col-flex-xs, var(--grid-col-flex));
+    max-width: var(--grid-col-max-width-xs, var(--grid-col-max-width, 100%));
+  }
+}
+
+@media (min-width: 576px) {
+  .col {
+    order: var(--grid-col-order-sm, var(--grid-col-order, 0));
+    flex: 0 0
+      calc(
+        var(--grid-col-span-sm, var(--grid-col-span-xs, var(--grid-col-span, 24))) / 24 *
+          100%
+      );
+    max-width: calc(
+      var(--grid-col-span-sm, var(--grid-col-span-xs, var(--grid-col-span, 24))) / 24 * 100%
+    );
+    margin-inline-start: calc(
+      var(
+          --grid-col-offset-sm,
+          var(--grid-col-offset-xs, var(--grid-col-offset, 0))
+        ) / 24 * 100%
+    );
+    inset-inline-start: calc(
+      var(--grid-col-push-sm, var(--grid-col-push-xs, var(--grid-col-push, 0))) / 24 * 100%
+    );
+    inset-inline-end: calc(
+      var(--grid-col-pull-sm, var(--grid-col-pull-xs, var(--grid-col-pull, 0))) / 24 * 100%
+    );
+  }
+
+  .colFlex {
+    flex: var(
+      --grid-col-flex-sm,
+      var(--grid-col-flex-xs, var(--grid-col-flex))
+    );
+    max-width: var(
+      --grid-col-max-width-sm,
+      var(--grid-col-max-width-xs, var(--grid-col-max-width, 100%))
+    );
+  }
+}
+
+@media (min-width: 768px) {
+  .col {
+    order: var(
+      --grid-col-order-md,
+      var(--grid-col-order-sm, var(--grid-col-order, 0))
+    );
+    flex: 0 0
+      calc(
+        var(
+            --grid-col-span-md,
+            var(--grid-col-span-sm, var(--grid-col-span-xs, var(--grid-col-span, 24)))
+          ) / 24 * 100%
+      );
+    max-width: calc(
+      var(
+          --grid-col-span-md,
+          var(--grid-col-span-sm, var(--grid-col-span-xs, var(--grid-col-span, 24)))
+        ) / 24 * 100%
+    );
+    margin-inline-start: calc(
+      var(
+          --grid-col-offset-md,
+          var(
+            --grid-col-offset-sm,
+            var(--grid-col-offset-xs, var(--grid-col-offset, 0))
+          )
+        ) / 24 * 100%
+    );
+    inset-inline-start: calc(
+      var(
+          --grid-col-push-md,
+          var(--grid-col-push-sm, var(--grid-col-push-xs, var(--grid-col-push, 0)))
+        ) / 24 * 100%
+    );
+    inset-inline-end: calc(
+      var(
+          --grid-col-pull-md,
+          var(--grid-col-pull-sm, var(--grid-col-pull-xs, var(--grid-col-pull, 0)))
+        ) / 24 * 100%
+    );
+  }
+
+  .colFlex {
+    flex: var(
+      --grid-col-flex-md,
+      var(--grid-col-flex-sm, var(--grid-col-flex-xs, var(--grid-col-flex)))
+    );
+    max-width: var(
+      --grid-col-max-width-md,
+      var(
+        --grid-col-max-width-sm,
+        var(--grid-col-max-width-xs, var(--grid-col-max-width, 100%))
+      )
+    );
+  }
+}
+
+@media (min-width: 992px) {
+  .col {
+    order: var(
+      --grid-col-order-lg,
+      var(--grid-col-order-md, var(--grid-col-order-sm, var(--grid-col-order, 0)))
+    );
+    flex: 0 0
+      calc(
+        var(
+            --grid-col-span-lg,
+            var(
+              --grid-col-span-md,
+              var(--grid-col-span-sm, var(--grid-col-span-xs, var(--grid-col-span, 24)))
+            )
+          ) / 24 * 100%
+      );
+    max-width: calc(
+      var(
+          --grid-col-span-lg,
+          var(
+            --grid-col-span-md,
+            var(--grid-col-span-sm, var(--grid-col-span-xs, var(--grid-col-span, 24)))
+          )
+        ) / 24 * 100%
+    );
+    margin-inline-start: calc(
+      var(
+          --grid-col-offset-lg,
+          var(
+            --grid-col-offset-md,
+            var(
+              --grid-col-offset-sm,
+              var(--grid-col-offset-xs, var(--grid-col-offset, 0))
+            )
+          )
+        ) / 24 * 100%
+    );
+    inset-inline-start: calc(
+      var(
+          --grid-col-push-lg,
+          var(
+            --grid-col-push-md,
+            var(--grid-col-push-sm, var(--grid-col-push-xs, var(--grid-col-push, 0)))
+          )
+        ) / 24 * 100%
+    );
+    inset-inline-end: calc(
+      var(
+          --grid-col-pull-lg,
+          var(
+            --grid-col-pull-md,
+            var(--grid-col-pull-sm, var(--grid-col-pull-xs, var(--grid-col-pull, 0)))
+          )
+        ) / 24 * 100%
+    );
+  }
+
+  .colFlex {
+    flex: var(
+      --grid-col-flex-lg,
+      var(
+        --grid-col-flex-md,
+        var(--grid-col-flex-sm, var(--grid-col-flex-xs, var(--grid-col-flex)))
+      )
+    );
+    max-width: var(
+      --grid-col-max-width-lg,
+      var(
+        --grid-col-max-width-md,
+        var(
+          --grid-col-max-width-sm,
+          var(--grid-col-max-width-xs, var(--grid-col-max-width, 100%))
+        )
+      )
+    );
+  }
+}
+
+@media (min-width: 1200px) {
+  .col {
+    order: var(
+      --grid-col-order-xl,
+      var(
+        --grid-col-order-lg,
+        var(--grid-col-order-md, var(--grid-col-order-sm, var(--grid-col-order, 0)))
+      )
+    );
+    flex: 0 0
+      calc(
+        var(
+            --grid-col-span-xl,
+            var(
+              --grid-col-span-lg,
+              var(
+                --grid-col-span-md,
+                var(--grid-col-span-sm, var(--grid-col-span-xs, var(--grid-col-span, 24)))
+              )
+            )
+          ) / 24 * 100%
+      );
+    max-width: calc(
+      var(
+          --grid-col-span-xl,
+          var(
+            --grid-col-span-lg,
+            var(
+              --grid-col-span-md,
+              var(--grid-col-span-sm, var(--grid-col-span-xs, var(--grid-col-span, 24)))
+            )
+          )
+        ) / 24 * 100%
+    );
+    margin-inline-start: calc(
+      var(
+          --grid-col-offset-xl,
+          var(
+            --grid-col-offset-lg,
+            var(
+              --grid-col-offset-md,
+              var(
+                --grid-col-offset-sm,
+                var(--grid-col-offset-xs, var(--grid-col-offset, 0))
+              )
+            )
+          )
+        ) / 24 * 100%
+    );
+    inset-inline-start: calc(
+      var(
+          --grid-col-push-xl,
+          var(
+            --grid-col-push-lg,
+            var(
+              --grid-col-push-md,
+              var(--grid-col-push-sm, var(--grid-col-push-xs, var(--grid-col-push, 0)))
+            )
+          )
+        ) / 24 * 100%
+    );
+    inset-inline-end: calc(
+      var(
+          --grid-col-pull-xl,
+          var(
+            --grid-col-pull-lg,
+            var(
+              --grid-col-pull-md,
+              var(--grid-col-pull-sm, var(--grid-col-pull-xs, var(--grid-col-pull, 0)))
+            )
+          )
+        ) / 24 * 100%
+    );
+  }
+
+  .colFlex {
+    flex: var(
+      --grid-col-flex-xl,
+      var(
+        --grid-col-flex-lg,
+        var(
+          --grid-col-flex-md,
+          var(--grid-col-flex-sm, var(--grid-col-flex-xs, var(--grid-col-flex)))
+        )
+      )
+    );
+    max-width: var(
+      --grid-col-max-width-xl,
+      var(
+        --grid-col-max-width-lg,
+        var(
+          --grid-col-max-width-md,
+          var(
+            --grid-col-max-width-sm,
+            var(--grid-col-max-width-xs, var(--grid-col-max-width, 100%))
+          )
+        )
+      )
+    );
+  }
+}
+
+@media (min-width: 1600px) {
+  .col {
+    order: var(
+      --grid-col-order-xxl,
+      var(
+        --grid-col-order-xl,
+        var(
+          --grid-col-order-lg,
+          var(--grid-col-order-md, var(--grid-col-order-sm, var(--grid-col-order, 0)))
+        )
+      )
+    );
+    flex: 0 0
+      calc(
+        var(
+            --grid-col-span-xxl,
+            var(
+              --grid-col-span-xl,
+              var(
+                --grid-col-span-lg,
+                var(
+                  --grid-col-span-md,
+                  var(
+                    --grid-col-span-sm,
+                    var(--grid-col-span-xs, var(--grid-col-span, 24))
+                  )
+                )
+              )
+            )
+          ) / 24 * 100%
+      );
+    max-width: calc(
+      var(
+          --grid-col-span-xxl,
+          var(
+            --grid-col-span-xl,
+            var(
+              --grid-col-span-lg,
+              var(
+                --grid-col-span-md,
+                var(
+                  --grid-col-span-sm,
+                  var(--grid-col-span-xs, var(--grid-col-span, 24))
+                )
+              )
+            )
+          )
+        ) / 24 * 100%
+    );
+    margin-inline-start: calc(
+      var(
+          --grid-col-offset-xxl,
+          var(
+            --grid-col-offset-xl,
+            var(
+              --grid-col-offset-lg,
+              var(
+                --grid-col-offset-md,
+                var(
+                  --grid-col-offset-sm,
+                  var(--grid-col-offset-xs, var(--grid-col-offset, 0))
+                )
+              )
+            )
+          )
+        ) / 24 * 100%
+    );
+    inset-inline-start: calc(
+      var(
+          --grid-col-push-xxl,
+          var(
+            --grid-col-push-xl,
+            var(
+              --grid-col-push-lg,
+              var(
+                --grid-col-push-md,
+                var(--grid-col-push-sm, var(--grid-col-push-xs, var(--grid-col-push, 0)))
+              )
+            )
+          )
+        ) / 24 * 100%
+    );
+    inset-inline-end: calc(
+      var(
+          --grid-col-pull-xxl,
+          var(
+            --grid-col-pull-xl,
+            var(
+              --grid-col-pull-lg,
+              var(
+                --grid-col-pull-md,
+                var(--grid-col-pull-sm, var(--grid-col-pull-xs, var(--grid-col-pull, 0)))
+              )
+            )
+          )
+        ) / 24 * 100%
+    );
+  }
+
+  .colFlex {
+    flex: var(
+      --grid-col-flex-xxl,
+      var(
+        --grid-col-flex-xl,
+        var(
+          --grid-col-flex-lg,
+          var(
+            --grid-col-flex-md,
+            var(--grid-col-flex-sm, var(--grid-col-flex-xs, var(--grid-col-flex)))
+          )
+        )
+      )
+    );
+    max-width: var(
+      --grid-col-max-width-xxl,
+      var(
+        --grid-col-max-width-xl,
+        var(
+          --grid-col-max-width-lg,
+          var(
+            --grid-col-max-width-md,
+            var(
+              --grid-col-max-width-sm,
+              var(--grid-col-max-width-xs, var(--grid-col-max-width, 100%))
+            )
+          )
+        )
+      )
+    );
+  }
+}
