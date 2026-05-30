@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { H1, H2, H3, H4, H5, P, Span, Text } from './text';
+import { H1, H2, H3, H4, H5, Label, P, Span } from './text';
 
 const meta: Meta<typeof P> = {
   title: 'Core/Text',
@@ -132,9 +132,9 @@ export const HtmlAttributes: Story = {
       </P>
       <P>
         Label field:{' '}
-        <Text as="label" htmlFor="email" className="font-medium">
+        <Label htmlFor="email" className="font-medium">
           Email
-        </Text>
+        </Label>
       </P>
     </div>
   ),

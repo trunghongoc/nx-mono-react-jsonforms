@@ -167,6 +167,7 @@
   --color-text-description: var(--color-text-tertiary);
   --color-text-disabled: var(--color-text-quaternary);
   --color-text-placeholder: var(--color-text-quaternary);
+  --color-label-required-mark: var(--color-error);
   --color-icon: var(--color-text-tertiary);
   --color-icon-hover: var(--color-text);
   --color-bg-container-disabled: var(--color-fill-tertiary);

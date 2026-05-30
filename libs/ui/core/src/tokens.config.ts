@@ -266,6 +266,7 @@ export const tokens = {
         textDescription: neutralText.textTertiary,
         textDisabled: neutralText.textQuaternary,
         textPlaceholder: neutralText.textQuaternary,
+        labelRequiredMark: brandError.error,
       },
       icon: {
         icon: neutralText.textTertiary,

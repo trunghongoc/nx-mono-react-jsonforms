@@ -50,6 +50,8 @@ export type ParagraphProps = Pick<TextOwnProps, 'type' | 'size' | 'children'> &
   ComponentPropsWithoutRef<'p'>;
 export type SpanProps = Pick<TextOwnProps, 'type' | 'size' | 'children'> &
   ComponentPropsWithoutRef<'span'>;
+export type LabelProps = Pick<TextOwnProps, 'type' | 'size' | 'children'> &
+  ComponentPropsWithoutRef<'label'>;
 export type BodyTextProps = ParagraphProps;
 
 const headingElements = ['h1', 'h2', 'h3', 'h4', 'h5'] as const;
@@ -157,6 +159,13 @@ export const Span = forwardRef<HTMLSpanElement, SpanProps>(function Span(
   ref
 ) {
   return <Text as="span" ref={ref} {...props} />;
+});
+
+export const Label = forwardRef<HTMLLabelElement, LabelProps>(function Label(
+  props,
+  ref
+) {
+  return <Text as="label" ref={ref} {...props} />;
 });
 
 export default Text;
