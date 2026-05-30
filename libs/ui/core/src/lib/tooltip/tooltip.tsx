@@ -62,7 +62,7 @@ const TooltipPanel = forwardRef<
       id={id}
       role="tooltip"
       className={cn(
-        'fixed z-tooltip w-max max-w-[min(320px,calc(100vw-var(--spacing-size)))] rounded-border bg-bg-spotlight px-padding-xs py-padding-xxs text-body-sm text-text-light-solid shadow-lg',
+        'fixed z-tooltip w-max max-w-[min(320px,calc(100vw-var(--spacing-size)))] rounded-border bg-bg-spotlight px-padding-xs py-padding-xxs text-body-sm text-text-light-solid shadow-box-secondary',
         className
       )}
       style={{

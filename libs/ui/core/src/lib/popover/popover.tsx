@@ -80,7 +80,7 @@ const PopoverPanel = forwardRef<
       id={id}
       role="dialog"
       className={cn(
-        'fixed z-tooltip w-max max-w-[min(320px,calc(100vw-var(--spacing-size)))] rounded-border-lg bg-bg-container p-padding-sm shadow-lg',
+        'fixed z-tooltip w-max max-w-[min(320px,calc(100vw-var(--spacing-size)))] rounded-border-lg bg-bg-container p-padding-sm shadow-box-secondary',
         className
       )}
       style={{

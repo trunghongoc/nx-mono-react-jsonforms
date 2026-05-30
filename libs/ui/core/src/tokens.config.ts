@@ -419,7 +419,17 @@ export const tokens = {
     borderSM: '4px',
     borderXS: '2px',
   },
+  /** Box-shadow aliases (Ant Design–aligned). */
   shadow: {
+    /** General control shadow — e.g. Cookie banner. */
+    boxShadow:
+      '0 6px 16px 0 rgb(0 0 0 / 0.08), 0 3px 6px -4px rgb(0 0 0 / 0.12), 0 9px 28px 8px rgb(0 0 0 / 0.05)',
+    /** Most intense element shadow — e.g. FloatButton, Dropdown, Cascader. */
+    boxShadowSecondary:
+      '0 6px 16px 0 rgb(0 0 0 / 0.08), 0 3px 6px -4px rgb(0 0 0 / 0.12), 0 9px 28px 8px rgb(0 0 0 / 0.05)',
+    /** Smoothest element shadow — e.g. Action Panel, Login/Signup forms. */
+    boxShadowTertiary:
+      '0 1px 2px 0 rgb(0 0 0 / 0.03), 0 1px 6px -1px rgb(0 0 0 / 0.02), 0 2px 4px 0 rgb(0 0 0 / 0.02)',
     sm: '0 1px 2px 0 rgb(0 0 0 / 0.05)',
     md: '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)',
     lg: '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)',
