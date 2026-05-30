@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "dependencies": {
+    "@nx-mono-react-jsonforms/api": "workspace:*",
     "@nx-mono-react-jsonforms/store": "workspace:*"
   },
   "devDependencies": {

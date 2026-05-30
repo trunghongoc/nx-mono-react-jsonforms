@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@nx-mono-react-jsonforms/core": "workspace:*",
+    "@nx-mono-react-jsonforms/api": "workspace:*",
     "@nx-mono-react-jsonforms/store": "workspace:*",
     "react-router-dom": "6.30.3"
   },

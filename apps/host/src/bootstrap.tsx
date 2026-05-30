@@ -1,6 +1,7 @@
 import { StrictMode } from 'react';
 import * as ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
+import { ApiProvider } from '@nx-mono-react-jsonforms/api';
 import { initAppVersion } from '@nx-mono-react-jsonforms/store';
 
 import App from './app/app';
@@ -12,8 +13,10 @@ const root = ReactDOM.createRoot(
 );
 root.render(
   <StrictMode>
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
+    <ApiProvider>
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
+    </ApiProvider>
   </StrictMode>,
 );

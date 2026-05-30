@@ -1,0 +1,7 @@
+packages:
+  - 'apps/*'
+  - 'project1'
+  - 'project2'
+  - 'libs/ui/*'
+  - 'libs/shared/*'
+  - 'libs/api'

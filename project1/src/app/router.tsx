@@ -1,32 +1,14 @@
 import { Link, type RouteObject } from 'react-router-dom';
 
-import { Button } from '@nx-mono-react-jsonforms/core';
+import { HomePage } from './home-page';
+import { ROUTES, navItems } from './routes';
 
-export const PREFIX = '/project1' as const;
-export const PROJECT2_HOME = '/project2' as const;
-
-export const ROUTES = {
-  HOME: '',
-  PAGE_2: 'page-2',
-} as const;
-
-export const navItems = [
-  { path: ROUTES.HOME, label: 'Home' },
-  { path: ROUTES.PAGE_2, label: 'Page 2' },
-] as const;
+export { PREFIX, PROJECT2_HOME, ROUTES, navItems } from './routes';
 
 export const appRoutes: RouteObject[] = [
   {
     index: true,
-    element: (
-      <div>
-        <p>Project 1</p>
-        <Button>Click me</Button>
-        <Link to={ROUTES.PAGE_2}>Go to page 2</Link>
-        {' · '}
-        <Link to={PROJECT2_HOME}>Go to Project 2</Link>
-      </div>
-    ),
+    element: <HomePage />,
   },
   {
     path: ROUTES.PAGE_2,
