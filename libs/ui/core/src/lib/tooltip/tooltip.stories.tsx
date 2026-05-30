@@ -129,7 +129,7 @@ export const WithIcon: Story = {
     <Tooltip
       anchor={
         <span className="inline-flex cursor-pointer">
-          <Icon name="question-circle" size={16} className="!text-icon" />
+          <Icon name="question-circle" size="md" className="!text-icon" />
         </span>
       }
       place="top"

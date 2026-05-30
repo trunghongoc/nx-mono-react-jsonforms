@@ -9,4 +9,6 @@ export * from './lib/tooltip';
 export * from './lib/text';
 export * from './lib/breadcrumb';
 export * from './lib/page-header';
+export * from './lib/page-left-sidebar';
+export * from './lib/page-layout';
 export { tokens, type Tokens } from './tokens.config';

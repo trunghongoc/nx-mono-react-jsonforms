@@ -98,7 +98,7 @@ export const EmailInput = forwardRef<HTMLInputElement, EmailInputProps>(
             <Icon
               name={statusIconConfig[status].name}
               theme="filled"
-              size={16}
+              size="md"
               className="!text-current"
             />
           </span>

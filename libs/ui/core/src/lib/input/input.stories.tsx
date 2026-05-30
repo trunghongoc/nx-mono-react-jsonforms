@@ -148,11 +148,11 @@ export const WithPrefix: Story = {
   render: () => (
     <div className="flex max-w-sm flex-col gap-4">
       <Input
-        prefix={<Icon name="user" size={16} />}
+        prefix={<Icon name="user" size="md" />}
         placeholder="Username"
       />
       <Input
-        prefix={<Icon name="user" size={16} />}
+        prefix={<Icon name="user" size="md" />}
         label="Username"
         placeholder="Enter username"
         required
@@ -163,19 +163,19 @@ export const WithPrefix: Story = {
         defaultValue="100"
       />
       <Input
-        prefix={<Icon name="user" size={16} />}
+        prefix={<Icon name="user" size="md" />}
         placeholder="With status"
         status="success"
         defaultValue="valid-user"
       />
       <Input
-        prefix={<Icon name="user" size={16} />}
+        prefix={<Icon name="user" size="md" />}
         type="password"
         placeholder="Password"
         defaultValue="secret123"
       />
       <Input
-        prefix={<Icon name="user" size={16} />}
+        prefix={<Icon name="user" size="md" />}
         placeholder="Disabled"
         disabled
         defaultValue="readonly"
@@ -213,7 +213,7 @@ export const Textarea: Story = {
         placeholder="With status"
       />
       <TextArea
-        prefix={<Icon name="edit" size={16} />}
+        prefix={<Icon name="edit" size="md" />}
         label="Notes"
         placeholder="Add notes"
       />
@@ -247,7 +247,7 @@ export const Emails: Story = {
         autoComplete="email"
       />
       <EmailInput
-        prefix={<Icon name="mail" size={16} />}
+        prefix={<Icon name="mail" size="md" />}
         label="Work email"
         placeholder="you@company.com"
         defaultValue="user@example.com"
@@ -429,11 +429,11 @@ export const AllVariants: Story = {
       <StorySection title="Prefix">
         <div className="flex flex-col gap-3">
           <Input
-            prefix={<Icon name="user" size={16} />}
+            prefix={<Icon name="user" size="md" />}
             placeholder="Username"
           />
           <Input
-            prefix={<Icon name="user" size={16} />}
+            prefix={<Icon name="user" size="md" />}
             label="Email"
             placeholder="Enter email"
           />
@@ -463,7 +463,7 @@ export const AllVariants: Story = {
             required
           />
           <EmailInput
-            prefix={<Icon name="mail" size={16} />}
+            prefix={<Icon name="mail" size="md" />}
             defaultValue="user@example.com"
           />
         </div>

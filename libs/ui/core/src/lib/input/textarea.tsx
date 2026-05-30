@@ -102,7 +102,7 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
             <Icon
               name={statusIconConfig[status].name}
               theme="filled"
-              size={16}
+              size="md"
               className="!text-current"
             />
           </span>

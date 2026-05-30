@@ -207,7 +207,7 @@ export function FieldLabel({
       {label}
       {tooltip != null ? (
         <span className="inline-flex cursor-pointer align-middle">
-          <Icon name="question-circle" size={16} className="!text-icon" />
+          <Icon name="question-circle" size="md" className="!text-icon" />
         </span>
       ) : null}
     </Label>

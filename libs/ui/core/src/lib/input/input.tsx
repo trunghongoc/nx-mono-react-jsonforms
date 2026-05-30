@@ -126,7 +126,7 @@ const InputControl = forwardRef<HTMLInputElement, InputProps>(
             <Icon
               name={statusIconConfig[status].name}
               theme="filled"
-              size={16}
+              size="md"
               className="!text-current"
             />
           </span>
@@ -149,7 +149,7 @@ const InputControl = forwardRef<HTMLInputElement, InputProps>(
           >
             <Icon
               name={passwordVisible ? 'eye' : 'eye-invisible'}
-              size={16}
+              size="md"
             />
           </button>
         ) : null}
