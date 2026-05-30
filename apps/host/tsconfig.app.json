@@ -38,6 +38,9 @@
     },
     {
       "path": "../../project1/tsconfig.app.json"
+    },
+    {
+      "path": "../../libs/shared/store/tsconfig.lib.json"
     }
   ]
 }

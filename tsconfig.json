@@ -23,6 +23,9 @@
     },
     {
       "path": "./libs/ui/core"
+    },
+    {
+      "path": "./libs/shared/store"
     }
   ]
 }
