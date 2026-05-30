@@ -1,77 +1,22 @@
-// Uncomment this line to use CSS modules
-// import styles from './app.module.scss';
-import React, { Suspense } from 'react';
-// import NxWelcome from './nx-welcome';
+import { Link, useRoutes } from 'react-router-dom';
 
-import { Route, Routes, Link } from 'react-router-dom';
-
-const Project2 = React.lazy(() => import('project2/Module'));
-
-const Project1 = React.lazy(() => import('project1/Module'));
+import { appRoutes, navItems } from './router';
 
 export function App() {
+  const routes = useRoutes(appRoutes);
+
   return (
     <div>
-      {/* <NxWelcome title="@nx-mono-react-jsonforms/host" /> */}
-
-      {/* START: routes */}
-      {/* These routes and navigation have been generated for you */}
-      {/* Feel free to move and update them to fit your needs */}
-      <br />
-      <hr />
-      <br />
       <div role="navigation">
         <ul>
-          <li>
-            <Link to="/">Home</Link>
-          </li>
-          <li>
-            <Link to="/project2">Project2</Link>
-          </li>
-          <li>
-            <Link to="/project1">Project1</Link>
-          </li>
-          <li>
-            <Link to="/page-2">Page 2</Link>
-          </li>
+          {navItems.map(({ path, label }) => (
+            <li key={path}>
+              <Link to={path}>{label}</Link>
+            </li>
+          ))}
         </ul>
       </div>
-      <Routes>
-        <Route
-          path="/"
-          element={
-            <div>
-              This is the generated root route.{' '}
-              <Link to="/page-2">Click here for page 2.</Link>
-            </div>
-          }
-        />
-        <Route
-          path="/project2"
-          element={
-            <Suspense fallback={<div>Loading Project2...</div>}>
-              <Project2 />
-            </Suspense>
-          }
-        />
-        <Route
-          path="/project1"
-          element={
-            <Suspense fallback={<div>Loading Project1...</div>}>
-              <Project1 />
-            </Suspense>
-          }
-        />
-        <Route
-          path="/page-2"
-          element={
-            <div>
-              <Link to="/">Click here to go back to root page.</Link>
-            </div>
-          }
-        />
-      </Routes>
-      {/* END: routes */}
+      {routes}
     </div>
   );
 }

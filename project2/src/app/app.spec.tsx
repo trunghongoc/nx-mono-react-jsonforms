@@ -1,17 +1,24 @@
 import { render } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
 
 import App from './app';
 
 describe('App', () => {
   it('should render successfully', () => {
-    const { baseElement } = render(<App />);
+    const { baseElement } = render(
+      <MemoryRouter>
+        <App />
+      </MemoryRouter>,
+    );
     expect(baseElement).toBeTruthy();
   });
 
-  it('should have a greeting as the title', () => {
-    const { getAllByText } = render(<App />);
-    expect(
-      getAllByText(new RegExp('Welcome project2', 'gi')).length > 0,
-    ).toBeTruthy();
+  it('should render project 2 content', () => {
+    const { getByText } = render(
+      <MemoryRouter>
+        <App />
+      </MemoryRouter>,
+    );
+    expect(getByText(/Project 2/i)).toBeTruthy();
   });
 });

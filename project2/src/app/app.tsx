@@ -1,11 +1,22 @@
-// Uncomment this line to use CSS modules
-// import styles from './app.module.scss';
-import NxWelcome from './nx-welcome';
+import { Link, useRoutes } from 'react-router-dom';
+
+import { appRoutes, navItems } from './router';
 
 export function App() {
+  const routes = useRoutes(appRoutes);
+
   return (
-    <div>
-      <NxWelcome title="project2" />
+    <div className="border-1 border-gray-500 p-4">
+      <nav>
+        <ul>
+          {navItems.map(({ path, label }) => (
+            <li key={path || 'home'}>
+              <Link to={path}>{label}</Link>
+            </li>
+          ))}
+        </ul>
+      </nav>
+      {routes}
     </div>
   );
 }
