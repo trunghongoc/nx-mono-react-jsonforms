@@ -16,17 +16,17 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const baseClasses =
-  'inline-flex cursor-pointer items-center justify-center gap-2 rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50';
+  'inline-flex cursor-pointer items-center justify-center gap-2 rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-5 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50';
 
 const variantClasses: Record<ButtonVariant, string> = {
   primary:
-    'bg-primary-600 text-white hover:bg-primary-700 active:bg-primary-800',
+    'bg-blue-6 text-white hover:bg-blue-7 active:bg-blue-8',
   secondary:
-    'bg-neutral-100 text-neutral-900 hover:bg-neutral-200 active:bg-neutral-300',
+    'bg-blue-1 text-blue-10 hover:bg-blue-2 active:bg-blue-3',
   outline:
-    'border border-border bg-background text-foreground hover:bg-neutral-50 active:bg-neutral-100',
-  ghost: 'text-foreground hover:bg-neutral-100 active:bg-neutral-200',
-  destructive: 'bg-error text-white hover:brightness-95 active:brightness-90',
+    'border border-blue-3 bg-white text-blue-10 hover:bg-blue-1 active:bg-blue-2',
+  ghost: 'text-blue-10 hover:bg-blue-1 active:bg-blue-2',
+  destructive: 'bg-red-6 text-white hover:bg-red-7 active:bg-red-8',
 };
 
 const sizeClasses: Record<ButtonSize, string> = {

@@ -28,12 +28,12 @@ export function HomePage() {
         Click me
       </Button>
       {isError && (
-        <p className="mt-2 text-error" role="alert">
+        <p className="mt-2 text-red-6" role="alert">
           {error.message}
         </p>
       )}
       {data && (
-        <pre className="mt-2 overflow-auto rounded-md bg-neutral-100 p-2 text-sm">
+        <pre className="mt-2 overflow-auto rounded-md bg-blue-1 p-2 text-sm">
           {JSON.stringify(data, null, 2)}
         </pre>
       )}

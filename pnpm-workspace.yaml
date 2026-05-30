@@ -5,3 +5,5 @@ packages:
   - 'libs/ui/*'
   - 'libs/shared/*'
   - 'libs/api'
+allowBuilds:
+  esbuild: true
