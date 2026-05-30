@@ -70,6 +70,7 @@
   "workspaces": [
     "apps/*",
     "project1",
-    "project2"
+    "project2",
+    "libs/ui/*"
   ]
 }

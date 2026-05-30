@@ -20,6 +20,9 @@
     },
     {
       "path": "./project2"
+    },
+    {
+      "path": "./libs/ui/core"
     }
   ]
 }
