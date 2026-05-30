@@ -80,7 +80,7 @@ const PopoverPanel = forwardRef<
       id={id}
       role="dialog"
       className={cn(
-        'fixed z-tooltip w-max max-w-[min(320px,calc(100vw-16px))] rounded-lg bg-bg-container p-[12px] shadow-lg',
+        'fixed z-tooltip w-max max-w-[min(320px,calc(100vw-var(--spacing-size)))] rounded-border-lg bg-bg-container p-padding-sm shadow-lg',
         className
       )}
       style={{
@@ -92,11 +92,11 @@ const PopoverPanel = forwardRef<
     >
       <span
         aria-hidden
-        className="absolute size-2 bg-bg-container"
+        className="absolute size-size-xs bg-bg-container"
         style={getArrowStyle(position.arrow.side, position.arrow.offset)}
       />
       {title ? (
-        <P className="mb-[16px] text-[14px] leading-[22px] font-semibold text-text">
+        <P className="mb-size text-body-md leading-[22px] font-semibold text-text">
           {title}
         </P>
       ) : null}

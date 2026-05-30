@@ -267,6 +267,66 @@
   --spacing-12: 3rem;
   --spacing-16: 4rem;
 
+  /* Size map */
+  --spacing-size-xxs: 4px;
+  --spacing-size-xs: 8px;
+  --spacing-size-sm: 12px;
+  --spacing-size: 16px;
+  --spacing-size-ms: 16px;
+  --spacing-size-md: 20px;
+  --spacing-size-lg: 24px;
+  --spacing-size-xl: 32px;
+  --spacing-size-xxl: 48px;
+
+  /* Control heights */
+  --height-control-xs: 16px;
+  --height-control-sm: 24px;
+  --height-control: 32px;
+  --height-control-lg: 40px;
+  --spacing-control-xs: var(--height-control-xs);
+  --spacing-control-sm: var(--height-control-sm);
+  --spacing-control: var(--height-control);
+  --spacing-control-lg: var(--height-control-lg);
+
+  /* Margin aliases */
+  --spacing-margin-xxs: var(--spacing-size-xxs);
+  --spacing-margin-xs: var(--spacing-size-xs);
+  --spacing-margin-sm: var(--spacing-size-sm);
+  --spacing-margin: var(--spacing-size);
+  --spacing-margin-md: var(--spacing-size-md);
+  --spacing-margin-lg: var(--spacing-size-lg);
+  --spacing-margin-xl: var(--spacing-size-xl);
+  --spacing-margin-xxl: var(--spacing-size-xxl);
+
+  /* Padding aliases */
+  --spacing-padding-xxs: var(--spacing-size-xxs);
+  --spacing-padding-xs: var(--spacing-size-xs);
+  --spacing-padding-sm: var(--spacing-size-sm);
+  --spacing-padding: var(--spacing-size);
+  --spacing-padding-md: var(--spacing-size-md);
+  --spacing-padding-lg: var(--spacing-size-lg);
+  --spacing-padding-xl: var(--spacing-size-xl);
+  --spacing-padding-content-horizontal-sm: var(--spacing-size);
+  --spacing-padding-content-vertical-sm: var(--spacing-size-xs);
+  --spacing-padding-content-horizontal: var(--spacing-size-ms);
+  --spacing-padding-content-vertical: var(--spacing-size-sm);
+  --spacing-padding-content-horizontal-lg: var(--spacing-size-lg);
+  --spacing-padding-content-vertical-lg: var(--spacing-size-ms);
+
+  /* Border radius (semantic) */
+  --radius-border: 6px;
+  --radius-border-lg: 8px;
+  --radius-border-sm: 4px;
+  --radius-border-xs: 2px;
+
+  /* Screen breakpoints */
+  --breakpoint-screen-xs: 480px;
+  --breakpoint-screen-sm: 576px;
+  --breakpoint-screen-md: 768px;
+  --breakpoint-screen-lg: 992px;
+  --breakpoint-screen-xl: 1200px;
+  --breakpoint-screen-xxl: 1600px;
+
   --font-sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
     'Segoe UI', Roboto, sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;

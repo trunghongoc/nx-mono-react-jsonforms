@@ -18,12 +18,12 @@ export interface IconProps extends Omit<SVGAttributes<SVGSVGElement>, 'name'> {
 }
 
 const sizeClasses: Record<IconSize, string> = {
-  xs: 'size-2.5',
-  sm: 'size-3',
-  md: 'size-3.5',
-  lg: 'size-4',
-  xl: 'size-5',
-  xxl: 'size-6',
+  xs: 'size-[10px]',
+  sm: 'size-size-sm',
+  md: 'size-[14px]',
+  lg: 'size-size',
+  xl: 'size-size-md',
+  xxl: 'size-size-lg',
 };
 
 function cn(...classes: Array<string | undefined | false>) {

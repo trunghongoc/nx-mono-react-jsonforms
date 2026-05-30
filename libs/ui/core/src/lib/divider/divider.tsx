@@ -47,12 +47,12 @@ function lineClasses(dashed?: boolean) {
 
 const labelAlignClasses: Record<DividerAlign, string> = {
   center: 'left-1/2 -translate-x-1/2',
-  left: 'left-6',
-  right: 'right-6',
+  left: 'left-size-lg',
+  right: 'right-size-lg',
 };
 
 const labelBoxClasses =
-  'absolute top-0 flex -translate-y-1/2 items-center rounded-sm bg-bg-container px-4 py-[2px] text-text-description';
+  'absolute top-0 flex -translate-y-1/2 items-center rounded-border-xs bg-bg-container px-padding py-padding-xxs text-text-description';
 
 function DividerLabel({
   label,

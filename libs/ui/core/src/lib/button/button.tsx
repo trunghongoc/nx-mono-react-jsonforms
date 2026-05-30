@@ -29,7 +29,7 @@ export interface ButtonProps
 }
 
 const baseClasses =
-  'inline-flex cursor-pointer items-center justify-center gap-2 border font-normal transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-control-outline focus-visible:ring-offset-2 [&_svg]:!text-current';
+  'inline-flex cursor-pointer items-center justify-center gap-size-xs border font-normal transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-control-outline focus-visible:ring-offset-2 [&_svg]:!text-current';
 
 const solidDisabledClasses =
   'disabled:pointer-events-none disabled:border-border disabled:bg-bg-container-disabled disabled:text-text-disabled';
@@ -38,15 +38,15 @@ const textDisabledClasses =
   'disabled:pointer-events-none disabled:text-text-disabled';
 
 const sizeClasses: Record<ButtonSize, string> = {
-  sm: 'h-6 px-[7px] text-body-md',
-  md: 'h-8 px-[15px] text-body-md',
-  lg: 'h-10 px-[15px] text-body-lg',
+  sm: 'h-control-sm px-[7px] text-body-md',
+  md: 'h-control px-[15px] text-body-md',
+  lg: 'h-control-lg px-[15px] text-body-lg',
 };
 
 const iconOnlySizeClasses: Record<ButtonSize, string> = {
-  sm: 'size-6 p-0',
-  md: 'size-8 p-0',
-  lg: 'size-10 p-0',
+  sm: 'size-control-sm p-0',
+  md: 'size-control p-0',
+  lg: 'size-control-lg p-0',
 };
 
 const loadingIconSize: Record<ButtonSize, IconSize> = {
@@ -230,7 +230,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         type={htmlType}
         className={cn(
           baseClasses,
-          round ? 'rounded-full' : 'rounded-md',
+          round ? 'rounded-full' : 'rounded-border',
           iconOnly ? iconOnlySizeClasses[size] : sizeClasses[size],
           isBorderless && 'border-0',
           !isBorderless &&

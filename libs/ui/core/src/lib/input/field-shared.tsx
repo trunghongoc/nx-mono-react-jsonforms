@@ -17,7 +17,7 @@ export type BaseFieldProps = {
 };
 
 export const baseClasses = [
-  'w-full rounded-md border border-solid bg-bg-container font-normal text-text',
+  'w-full rounded-border border border-solid bg-bg-container font-normal text-text',
   'text-body-md transition-colors outline-none',
   'placeholder:text-text-placeholder',
   'disabled:cursor-not-allowed disabled:border-border disabled:bg-bg-container-disabled disabled:text-text-disabled',
@@ -25,15 +25,15 @@ export const baseClasses = [
 ].join(' ');
 
 export const inputSizeClasses: Record<InputSize, string> = {
-  sm: 'h-6',
-  md: 'h-8',
-  lg: 'h-10',
+  sm: 'h-control-sm',
+  md: 'h-control',
+  lg: 'h-control-lg',
 };
 
 export const textareaSizeClasses: Record<InputSize, string> = {
-  sm: 'min-h-14 resize-y py-1',
+  sm: 'min-h-14 resize-y py-padding-xxs',
   md: 'min-h-[72px] resize-y py-1.5',
-  lg: 'min-h-20 resize-y py-2',
+  lg: 'min-h-20 resize-y py-padding-xs',
 };
 
 export const labelSizeMap: Record<InputSize, TextSize> = {
@@ -54,13 +54,13 @@ export const paddingClasses = {
 } as const;
 
 export const prefixFieldPaddingClasses = {
-  default: 'gap-2 px-[11px]',
-  withSuffix: 'gap-2 pl-[11px] pr-[35px]',
+  default: 'gap-size-xs px-[11px]',
+  withSuffix: 'gap-size-xs pl-[11px] pr-[35px]',
 } as const;
 
 export const textareaPrefixFieldPaddingClasses = {
-  default: 'gap-2 px-[11px] py-1.5',
-  withSuffix: 'gap-2 py-1.5 pl-[11px] pr-[35px]',
+  default: 'gap-size-xs px-[11px] py-padding-xxs',
+  withSuffix: 'gap-size-xs py-padding-xxs pl-[11px] pr-[35px]',
 } as const;
 
 export const inputWithPrefixClasses = [
@@ -197,7 +197,7 @@ export function FieldLabel({
     <Label
       htmlFor={htmlFor}
       size={labelSizeMap[size]}
-      className="inline-flex items-center gap-1 font-normal text-text-label"
+      className="inline-flex items-center gap-size-xxs font-normal text-text-label"
     >
       {required ? (
         <span className="text-label-required-mark" aria-hidden>
@@ -258,7 +258,7 @@ export function FieldLayout({
   }
 
   return (
-    <div className="relative inline-flex w-full flex-col gap-1">
+    <div className="relative inline-flex w-full flex-col gap-size-xxs">
       {label != null ? (
         <FieldLabel
           htmlFor={inputId}
