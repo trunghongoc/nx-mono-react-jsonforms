@@ -140,6 +140,11 @@ const brandControl = {
   controlTmpOutline: neutralFill.fillQuaternary,
 } as const;
 
+const buttonTokens = {
+  defaultBorderColor: defineThemeToken('#D9D9D9', '#424242'),
+  defaultBg: defineThemeToken('#FFFFFF', '#141414'),
+} as const;
+
 export const tokens = {
   color: {
     blue: bluePalette,
@@ -288,6 +293,7 @@ export const tokens = {
       link: brandLink,
       control: brandControl,
     },
+    button: buttonTokens,
   },
   spacing: {
     0: '0',

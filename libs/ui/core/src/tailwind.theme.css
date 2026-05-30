@@ -177,6 +177,10 @@
   --color-fill-content-hover: var(--color-fill);
   --color-fill-alter: var(--color-fill-quaternary);
 
+  /* Button */
+  --color-default-border-color: var(--color-border);
+  --color-default-bg: var(--color-bg-container);
+
   /* Brand — Primary (blue) */
   --color-primary-bg: var(--color-blue-1);
   --color-primary-bg-hover: var(--color-blue-2);
