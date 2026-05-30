@@ -47,6 +47,9 @@ const labelSizeClasses: Record<RadioSize, string> = {
   lg: 'text-body-lg',
 };
 
+const nativeInputOverlayClasses =
+  'peer absolute inset-0 z-10 size-full cursor-pointer opacity-0 disabled:cursor-not-allowed';
+
 function cn(...classes: Array<string | undefined | false>) {
   return classes.filter(Boolean).join(' ');
 }
@@ -96,10 +99,14 @@ export const Radio = forwardRef<HTMLInputElement, RadioProps>(function Radio(
           type="radio"
           disabled={disabled}
           onChange={onChange}
-          className="sr-only"
+          className={nativeInputOverlayClasses}
           {...rest}
         />
-        {children ? <span className="whitespace-nowrap">{children}</span> : null}
+        {children ? (
+          <span className="pointer-events-none relative z-0 whitespace-nowrap">
+            {children}
+          </span>
+        ) : null}
       </label>
     );
   }
@@ -107,21 +114,21 @@ export const Radio = forwardRef<HTMLInputElement, RadioProps>(function Radio(
   return (
     <label
       className={cn(
-        'group/radio inline-flex cursor-pointer items-center gap-size-xs',
+        'group/radio relative inline-flex cursor-pointer items-center gap-size-xs',
         disabled && 'cursor-not-allowed',
         className
       )}
     >
-      <span className="relative inline-flex shrink-0">
-        <input
-          ref={setRefs}
-          id={inputId}
-          type="radio"
-          disabled={disabled}
-          onChange={onChange}
-          className="sr-only"
-          {...rest}
-        />
+      <input
+        ref={setRefs}
+        id={inputId}
+        type="radio"
+        disabled={disabled}
+        onChange={onChange}
+        className={nativeInputOverlayClasses}
+        {...rest}
+      />
+      <span className="pointer-events-none relative z-0 inline-flex shrink-0">
         <span
           className={cn(
             'inline-flex items-center justify-center border border-solid transition-colors',
@@ -151,7 +158,7 @@ export const Radio = forwardRef<HTMLInputElement, RadioProps>(function Radio(
         <span
           className={cn(
             labelSizeClasses[size],
-            'text-text',
+            'pointer-events-none relative z-0 text-text',
             disabled && 'text-text-disabled'
           )}
         >

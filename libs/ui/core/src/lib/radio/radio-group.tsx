@@ -115,8 +115,11 @@ export function RadioGroup({
   const layoutClasses =
     direction === 'vertical' ? verticalLayoutClasses : horizontalLayoutClasses;
 
-  const mappedChildren = collectRadioChildren(children).map((element) =>
-    enhanceRadio(element, name, size, type, danger, disabled)
+  const mappedChildren = collectRadioChildren(children).map((element, index) =>
+    cloneElement(
+      enhanceRadio(element, name, size, type, danger, disabled),
+      { key: element.key ?? element.props.value ?? index }
+    )
   );
 
   return (

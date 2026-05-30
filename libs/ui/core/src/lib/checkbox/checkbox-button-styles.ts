@@ -5,14 +5,14 @@ function cn(...classes: Array<string | undefined | false>) {
 }
 
 const disabledClasses = cn(
-  'has-[:disabled]:pointer-events-none has-[:disabled]:cursor-not-allowed',
+  'has-[:disabled]:cursor-not-allowed',
   'has-[:disabled]:border-border has-[:disabled]:bg-bg-container-disabled has-[:disabled]:text-text-disabled',
   'hover:has-[:disabled]:border-border hover:has-[:disabled]:bg-bg-container-disabled hover:has-[:disabled]:text-text-disabled'
 );
 
 export const buttonVariantBaseClasses = [
-  'inline-flex cursor-pointer items-center justify-center border font-normal transition-colors',
-  'outline-none focus-within:outline-none focus-visible:outline-none',
+  'relative inline-flex cursor-pointer items-center justify-center border font-normal transition-colors',
+  'outline-none has-[:focus-visible]:outline-none has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-control-outline has-[:focus-visible]:ring-offset-2',
 ].join(' ');
 
 export const buttonVariantSizeClasses = {
