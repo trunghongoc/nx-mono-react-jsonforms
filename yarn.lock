@@ -10625,6 +10625,11 @@ process-nextick-args@~2.0.0:
   resolved "https://registry.yarnpkg.com/project1/-/project1-1.0.0.tgz#f32d10453a2bbd59473b444e648eada95c70c1ac"
   integrity sha512-FEE3ofQ81mrzOP2D7pLqPZOQoKN7b7zpw7Keff5f6yH93S6QDGw9hUJSAqtAO8pTOnz9pWB2vjU25myxx9a0QQ==
 
+"project2@workspace:*":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/project2/-/project2-1.0.0.tgz#d7edde5a6bf2ccd7767dd4b1042b1f58f9a42590"
+  integrity sha512-13redHDnjQMHEzJtqYwCi7dY6ZFimESZ11dYin/YUqOMT3WAQfdfy8k39RWbrdgaicX3X8AsdqXgib49Blekiw==
+
 prop-types@^15.8.1:
   version "15.8.1"
   resolved "https://registry.npmjs.org/prop-types/-/prop-types-15.8.1.tgz"

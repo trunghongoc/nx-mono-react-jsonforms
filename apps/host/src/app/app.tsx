@@ -4,6 +4,8 @@ import NxWelcome from './nx-welcome';
 
 import { Route, Routes, Link } from 'react-router-dom';
 
+const Project2 = React.lazy(() => import('project2/Module'));
+
 const Project1 = React.lazy(() => import('project1/Module'));
 
 export function App() {
@@ -23,6 +25,9 @@ export function App() {
             <Link to="/">Home</Link>
           </li>
           <li>
+            <Link to="/project2">Project2</Link>
+          </li>
+          <li>
             <Link to="/project1">Project1</Link>
           </li>
           <li>
@@ -40,6 +45,7 @@ export function App() {
             </div>
           }
         />
+        <Route path="/project2" element={<Project2 />} />
         <Route path="/project1" element={<Project1 />} />
         <Route
           path="/page-2"

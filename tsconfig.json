@@ -14,6 +14,12 @@
     },
     {
       "path": "./project1"
+    },
+    {
+      "path": "./project2-e2e"
+    },
+    {
+      "path": "./project2"
     }
   ]
 }

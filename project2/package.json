@@ -1,0 +1,115 @@
+{
+  "name": "project2",
+  "version": "0.0.1",
+  "private": true,
+  "nx": {
+    "name": "project2",
+    "sourceRoot": "project2/src",
+    "targets": {
+      "build": {
+        "executor": "@nx/webpack:webpack",
+        "outputs": [
+          "{options.outputPath}"
+        ],
+        "defaultConfiguration": "production",
+        "options": {
+          "compiler": "babel",
+          "outputPath": "project2/dist",
+          "index": "project2/src/index.html",
+          "baseHref": "/",
+          "main": "project2/src/main.ts",
+          "tsConfig": "project2/tsconfig.app.json",
+          "assets": [
+            "project2/src/favicon.ico",
+            "project2/src/assets"
+          ],
+          "styles": [
+            "project2/src/styles.scss"
+          ],
+          "scripts": [],
+          "webpackConfig": "project2/webpack.config.ts"
+        },
+        "configurations": {
+          "development": {
+            "extractLicenses": false,
+            "optimization": false,
+            "sourceMap": true,
+            "vendorChunk": true
+          },
+          "production": {
+            "fileReplacements": [
+              {
+                "replace": "project2/src/environments/environment.ts",
+                "with": "project2/src/environments/environment.prod.ts"
+              }
+            ],
+            "optimization": true,
+            "outputHashing": "all",
+            "sourceMap": false,
+            "namedChunks": false,
+            "extractLicenses": true,
+            "vendorChunk": false
+          }
+        },
+        "dependsOn": [
+          "^build",
+          "typecheck"
+        ]
+      },
+      "serve": {
+        "executor": "@nx/react:module-federation-dev-server",
+        "defaultConfiguration": "development",
+        "options": {
+          "buildTarget": "project2:build",
+          "hmr": true,
+          "port": 4201
+        },
+        "configurations": {
+          "development": {
+            "buildTarget": "project2:build:development"
+          },
+          "production": {
+            "buildTarget": "project2:build:production",
+            "hmr": false
+          }
+        },
+        "dependsOn": [
+          "typecheck"
+        ]
+      },
+      "test": {
+        "executor": "@nx/jest:jest",
+        "outputs": [
+          "{projectRoot}/test-output/jest/coverage"
+        ],
+        "options": {
+          "jestConfig": "project2/jest.config.cts"
+        }
+      },
+      "serve-static": {
+        "executor": "@nx/react:module-federation-static-server",
+        "defaultConfiguration": "production",
+        "options": {
+          "serveTarget": "project2:serve"
+        },
+        "configurations": {
+          "development": {
+            "serveTarget": "project2:serve:development"
+          },
+          "production": {
+            "serveTarget": "project2:serve:production"
+          }
+        }
+      }
+    }
+  },
+  "exports": {
+    "./Module": {
+      "@nx-mono-react-jsonforms/source": "./src/remote-entry.ts",
+      "types": "./src/remote-entry.ts",
+      "import": "./src/remote-entry.ts",
+      "default": "./src/remote-entry.ts"
+    }
+  },
+  "types": "./src/remote-entry.ts"
+}
