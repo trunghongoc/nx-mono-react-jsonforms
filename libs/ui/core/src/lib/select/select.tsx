@@ -15,6 +15,7 @@ import {
   type MouseEventHandler,
   type ReactElement,
   type ReactNode,
+  type CSSProperties,
 } from 'react';
 import { createPortal } from 'react-dom';
 
@@ -25,6 +26,7 @@ import {
   type DropdownPlacement,
 } from '../dropdown/dropdown';
 import { Icon } from '../icon';
+import { Tag } from '../tag';
 import {
   baseClasses,
   cn,
@@ -51,7 +53,7 @@ export type SelectOptionData = {
   disabled?: boolean;
 };
 
-export interface SelectProps extends BaseFieldProps {
+type SelectSharedProps = BaseFieldProps & {
   placeholder?: string;
   /** Shown in the dropdown when there are no options. */
   emptyPlaceholder?: ReactNode;
@@ -61,9 +63,6 @@ export interface SelectProps extends BaseFieldProps {
   errorPlaceholder?: ReactNode;
   /** When true, the dropdown shows `errorPlaceholder` instead of options. */
   optionsError?: boolean;
-  value?: string;
-  defaultValue?: string;
-  onChange?: (value: string | undefined) => void;
   options?: SelectOptionData[];
   children?: ReactNode;
   disabled?: boolean;
@@ -82,7 +81,25 @@ export interface SelectProps extends BaseFieldProps {
   id?: string;
   required?: boolean;
   'aria-describedby'?: string;
-}
+};
+
+export type SelectSingleProps = SelectSharedProps & {
+  multiple?: false;
+  value?: string;
+  defaultValue?: string;
+  onChange?: (value: string | undefined) => void;
+};
+
+export type SelectMultipleProps = SelectSharedProps & {
+  multiple: true;
+  value?: string[];
+  defaultValue?: string[];
+  onChange?: (value: string[]) => void;
+  /** Maximum number of options that can be selected. */
+  maxSelected?: number;
+};
+
+export type SelectProps = SelectSingleProps | SelectMultipleProps;
 
 function collectSelectOptions(children: ReactNode): SelectOptionData[] {
   const options: SelectOptionData[] = [];
@@ -162,60 +179,119 @@ const suffixIconBaseClasses =
 const suffixFirstIconClasses = `${suffixIconBaseClasses} right-[35px]`;
 const suffixSecondIconClasses = `${suffixIconBaseClasses} right-[59px]`;
 
-function SelectRoot({
-  placeholder = 'Select an option',
-  emptyPlaceholder = 'No options',
-  loadingPlaceholder = 'Loading...',
-  errorPlaceholder = 'Failed to load options',
-  value,
-  defaultValue,
-  onChange,
-  options: optionsProp,
-  children,
-  size = 'md',
-  status,
-  label,
-  tooltip,
-  error,
-  prefix,
-  required,
-  disabled = false,
-  loading = false,
-  optionsError = false,
-  allowClear = false,
-  allowSearch = false,
-  localSearch = true,
-  searchPlaceholder = 'Search...',
-  onSearch,
-  open,
-  defaultOpen = false,
-  onOpenChange,
-  placement,
-  className,
-  menuClassName,
-  id: idProp,
-  'aria-describedby': ariaDescribedBy,
-}: SelectProps) {
+const emptyMultipleValues: string[] = [];
+
+const multipleSizeClasses: Record<InputSize, string> = {
+  sm: 'min-h-control-sm py-1',
+  md: 'min-h-control py-1',
+  lg: 'min-h-control-lg py-1.5',
+};
+
+const selectMenuScrollClasses =
+  '!min-w-0 overflow-x-hidden overflow-y-auto max-h-80';
+
+const selectMenuShellClasses =
+  '!min-w-0 flex max-h-80 flex-col overflow-hidden';
+
+const selectMenuBodyScrollClasses =
+  'min-h-0 flex-1 overflow-x-hidden overflow-y-auto';
+
+function getMenuWidthStyle(menuWidth?: number): CSSProperties | undefined {
+  if (menuWidth == null) {
+    return undefined;
+  }
+
+  return {
+    width: menuWidth,
+    minWidth: menuWidth,
+    maxWidth: menuWidth,
+  };
+}
+
+function getMenuPanelStyle(
+  position: { top: number; left: number },
+  menuWidth?: number
+) {
+  return {
+    top: position.top,
+    left: position.left,
+    ...getMenuWidthStyle(menuWidth),
+  };
+}
+
+function SelectRoot(props: SelectProps) {
+  const {
+    placeholder = 'Select an option',
+    emptyPlaceholder = 'No options',
+    loadingPlaceholder = 'Loading...',
+    errorPlaceholder = 'Failed to load options',
+    value,
+    defaultValue,
+    onChange,
+    options: optionsProp,
+    children,
+    size = 'md',
+    status,
+    label,
+    tooltip,
+    error,
+    prefix,
+    required,
+    disabled = false,
+    loading = false,
+    optionsError = false,
+    allowClear = false,
+    allowSearch = false,
+    localSearch = true,
+    searchPlaceholder = 'Search...',
+    onSearch,
+    open,
+    defaultOpen = false,
+    onOpenChange,
+    placement,
+    className,
+    menuClassName,
+    id: idProp,
+    'aria-describedby': ariaDescribedBy,
+  } = props;
+  const multiple = props.multiple === true;
+  const maxSelected = multiple
+    ? (props as SelectMultipleProps).maxSelected
+    : undefined;
   const generatedId = useId();
   const errorId = useId();
   const menuId = useId();
   const selectId = idProp ?? generatedId;
+  const controlRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
+  const optionsScrollRef = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const menuKeyDownRef = useRef<
     ((event: ReactKeyboardEvent<HTMLElement>) => void) | null
   >(null);
   const [mounted, setMounted] = useState(false);
   const [internalOpen, setInternalOpen] = useState(defaultOpen);
-  const [internalValue, setInternalValue] = useState(defaultValue);
-  const [menuMinWidth, setMenuMinWidth] = useState<number>();
+  const [internalSingleValue, setInternalSingleValue] = useState<string | undefined>(
+    multiple ? undefined : (defaultValue as string | undefined)
+  );
+  const [internalMultipleValue, setInternalMultipleValue] = useState<string[]>(
+    multiple ? ((defaultValue as string[] | undefined) ?? []) : []
+  );
+  const [menuWidth, setMenuWidth] = useState<number>();
   const [searchValue, setSearchValue] = useState('');
 
   const isOpenControlled = open !== undefined;
   const isValueControlled = value !== undefined;
   const isOpen = isOpenControlled ? open : internalOpen;
-  const selectedValue = isValueControlled ? value : internalValue;
+  const selectedSingleValue = isValueControlled
+    ? (value as string | undefined)
+    : internalSingleValue;
+  const selectedMultipleValues = multiple
+    ? isValueControlled
+      ? ((value as string[] | undefined) ?? emptyMultipleValues)
+      : internalMultipleValue
+    : emptyMultipleValues;
 
   const resolvedOptions = useMemo(() => {
     if (optionsProp != null) {
@@ -233,8 +309,38 @@ function SelectRoot({
     return filterOptionsLocally(resolvedOptions, searchValue);
   }, [allowSearch, localSearch, resolvedOptions, searchValue]);
 
-  const selectedOption = resolvedOptions.find(
-    (option) => option.value === selectedValue
+  const selectedOption = multiple
+    ? undefined
+    : resolvedOptions.find((option) => option.value === selectedSingleValue);
+  const selectedOptions = multiple
+    ? selectedMultipleValues
+        .map((selectedValue) =>
+          resolvedOptions.find((option) => option.value === selectedValue)
+        )
+        .filter((option): option is SelectOptionData => option != null)
+    : [];
+  const hasSelection = multiple
+    ? selectedMultipleValues.length > 0
+    : selectedSingleValue != null && selectedSingleValue !== '';
+  const hasReachedMaxSelected =
+    multiple &&
+    maxSelected != null &&
+    selectedMultipleValues.length >= maxSelected;
+  const isOptionSelected = useCallback(
+    (optionValue: string) =>
+      multiple
+        ? selectedMultipleValues.includes(optionValue)
+        : selectedSingleValue === optionValue,
+    [multiple, selectedMultipleValues, selectedSingleValue]
+  );
+  const isOptionSelectionLocked = useCallback(
+    (optionValue: string) =>
+      Boolean(
+        multiple &&
+          hasReachedMaxSelected &&
+          !isOptionSelected(optionValue)
+      ),
+    [hasReachedMaxSelected, isOptionSelected, multiple]
   );
   const hasSourceOptions = resolvedOptions.length > 0;
   const hasDisplayOptions = displayOptions.length > 0;
@@ -243,7 +349,7 @@ function SelectRoot({
   const hasError = error != null && error !== '';
   const hasPrefix = hasPrefixContent(prefix);
   const hasStatus = status != null;
-  const hasClear = allowClear && selectedValue != null && selectedValue !== '';
+  const hasClear = allowClear && hasSelection;
   const describedBy = cn(ariaDescribedBy, hasError && errorId) || undefined;
 
   const wrapperBorderClasses = status
@@ -270,13 +376,24 @@ function SelectRoot({
     setOpen(false);
   }, [setOpen]);
 
-  const setSelectedValue = useCallback(
+  const setSelectedSingleValue = useCallback(
     (nextValue: string) => {
       if (!isValueControlled) {
-        setInternalValue(nextValue);
+        setInternalSingleValue(nextValue);
       }
 
-      onChange?.(nextValue);
+      (onChange as SelectSingleProps['onChange'])?.(nextValue);
+    },
+    [isValueControlled, onChange]
+  );
+
+  const setSelectedMultipleValues = useCallback(
+    (nextValues: string[]) => {
+      if (!isValueControlled) {
+        setInternalMultipleValue(nextValues);
+      }
+
+      (onChange as SelectMultipleProps['onChange'])?.(nextValues);
     },
     [isValueControlled, onChange]
   );
@@ -285,12 +402,31 @@ function SelectRoot({
     event.preventDefault();
     event.stopPropagation();
 
-    if (!isValueControlled) {
-      setInternalValue(undefined);
+    if (multiple) {
+      if (!isValueControlled) {
+        setInternalMultipleValue([]);
+      }
+
+      (onChange as SelectMultipleProps['onChange'])?.([]);
+      return;
     }
 
-    onChange?.(undefined);
+    if (!isValueControlled) {
+      setInternalSingleValue(undefined);
+    }
+
+    (onChange as SelectSingleProps['onChange'])?.(undefined);
   };
+
+  const handleRemoveValue = useCallback(
+    (optionValue: string) => {
+      const nextValues = selectedMultipleValues.filter(
+        (currentValue) => currentValue !== optionValue
+      );
+      setSelectedMultipleValues(nextValues);
+    },
+    [selectedMultipleValues, setSelectedMultipleValues]
+  );
 
   const handleSearchChange = useCallback(
     (nextSearch: string) => {
@@ -303,17 +439,19 @@ function SelectRoot({
   const position = useDropdownPosition({
     isOpen,
     mounted,
-    anchorRef: triggerRef,
+    anchorRef: controlRef,
     panelRef: menuRef,
     placement,
     deps: [
       displayOptions,
       placement,
-      menuMinWidth,
+      menuWidth,
       allowSearch,
       searchValue,
       loading,
       optionsError,
+      multiple,
+      selectedMultipleValues,
     ],
   });
 
@@ -322,12 +460,12 @@ function SelectRoot({
   }, []);
 
   useLayoutEffect(() => {
-    if (!isOpen || !triggerRef.current) {
+    if (!isOpen || !controlRef.current) {
       return;
     }
 
-    setMenuMinWidth(triggerRef.current.offsetWidth);
-  }, [isOpen, size, hasPrefix, hasStatus, hasClear, selectedValue]);
+    setMenuWidth(controlRef.current.offsetWidth);
+  }, [isOpen, size, hasPrefix, hasStatus, hasClear, selectedSingleValue, selectedMultipleValues, multiple]);
 
   useLayoutEffect(() => {
     if (!isOpen || !allowSearch) {
@@ -336,6 +474,18 @@ function SelectRoot({
 
     searchInputRef.current?.focus({ preventScroll: true });
   }, [allowSearch, isOpen]);
+
+  useLayoutEffect(() => {
+    if (!isOpen) {
+      return;
+    }
+
+    const scrollContainer = allowSearch
+      ? optionsScrollRef.current
+      : menuRef.current;
+
+    scrollContainer?.scrollTo({ top: 0 });
+  }, [allowSearch, isOpen, searchValue, displayOptions.length]);
 
   useEffect(() => {
     if (isOpen) {
@@ -387,31 +537,91 @@ function SelectRoot({
         return;
       }
 
-      setSelectedValue(option.value);
+      if (multiple) {
+        if (isOptionSelected(option.value)) {
+          setSelectedMultipleValues(
+            selectedMultipleValues.filter(
+              (currentValue) => currentValue !== option.value
+            )
+          );
+          return;
+        }
+
+        if (hasReachedMaxSelected) {
+          return;
+        }
+
+        setSelectedMultipleValues([...selectedMultipleValues, option.value]);
+        return;
+      }
+
+      setSelectedSingleValue(option.value);
     },
-    [displayOptions, setSelectedValue]
+    [
+      displayOptions,
+      hasReachedMaxSelected,
+      isOptionSelected,
+      multiple,
+      selectedMultipleValues,
+      setSelectedMultipleValues,
+      setSelectedSingleValue,
+    ]
   );
 
   const renderOptionItems = () =>
-    displayOptions.map((option) => (
-      <DropdownItem key={option.value} disabled={option.disabled}>
-        <span className="flex w-full items-center justify-between gap-size-xs">
-          <span
-            className={cn(
-              option.disabled && 'text-text-disabled',
-              !option.disabled &&
-                option.value === selectedValue &&
-                'text-primary'
-            )}
-          >
-            {option.label}
+    displayOptions.map((option) => {
+      const selected = isOptionSelected(option.value);
+      const selectionLocked = isOptionSelectionLocked(option.value);
+
+      return (
+        <DropdownItem
+          key={option.value}
+          disabled={option.disabled || selectionLocked}
+        >
+          <span className="flex w-full min-w-0 items-start justify-between gap-size-xs">
+            <span
+              className={cn(
+                'min-w-0 flex-1 break-words whitespace-normal',
+                (option.disabled || selectionLocked) && 'text-text-disabled',
+                !option.disabled && !selectionLocked && selected && 'text-primary'
+              )}
+            >
+              {option.label}
+            </span>
+            {selected ? (
+              <Icon
+                name="check"
+                size="sm"
+                className="mt-0.5 shrink-0 !text-primary"
+              />
+            ) : null}
           </span>
-          {option.value === selectedValue ? (
-            <Icon name="check" size="sm" className="shrink-0 !text-primary" />
-          ) : null}
-        </span>
-      </DropdownItem>
-    ));
+        </DropdownItem>
+      );
+    });
+
+  const renderTriggerContent = () => {
+    if (multiple) {
+      if (selectedOptions.length === 0) {
+        return (
+          <span className="text-text-placeholder">{placeholder}</span>
+        );
+      }
+
+      return selectedOptions.map((option) => (
+        <Tag
+          key={option.value}
+          content={option.label}
+          iconRight={{
+            name: 'close',
+            onClick: () => handleRemoveValue(option.value),
+          }}
+        />
+      ));
+    }
+
+    return selectedOption?.label ?? placeholder;
+  };
 
   const renderEmptyMessage = () => (
     <div className="px-padding-sm py-padding-md text-center text-body-md font-normal text-text-description">
@@ -457,7 +667,7 @@ function SelectRoot({
 
   const renderSearchInput = () => (
     <div
-      className="flex items-center gap-size-xs border-b border-border px-padding-sm py-padding-xxs"
+      className="flex shrink-0 items-center gap-size-xs border-b border-border px-padding-sm py-padding-xxs"
       onMouseDown={(event) => event.stopPropagation()}
     >
       <Icon name="search" size="sm" className="shrink-0 text-icon" aria-hidden />
@@ -474,7 +684,7 @@ function SelectRoot({
 
           if (event.key === 'ArrowDown' && hasDisplayOptions && !loading && !optionsError) {
             event.preventDefault();
-            menuRef.current?.focus({ preventScroll: true });
+            optionsScrollRef.current?.focus({ preventScroll: true });
             menuKeyDownRef.current?.(event);
             return;
           }
@@ -497,15 +707,13 @@ function SelectRoot({
           id={menuId}
           role="listbox"
           aria-label="Options"
+          aria-multiselectable={multiple || undefined}
           className={cn(
-            'fixed z-dropdown min-w-[calc(var(--spacing-size-lg)*5)] rounded-border-lg bg-bg-elevated p-padding-xxs shadow-box-secondary',
+            'fixed z-dropdown rounded-border-lg bg-bg-elevated p-padding-xxs shadow-box-secondary',
+            selectMenuScrollClasses,
             menuClassName
           )}
-          style={{
-            top: position.top,
-            left: position.left,
-            ...(menuMinWidth != null ? { minWidth: menuMinWidth } : null),
-          }}
+          style={getMenuPanelStyle(position, menuWidth)}
         >
           {optionsError ? renderErrorMessage() : renderEmptyMessage()}
         </div>
@@ -514,27 +722,42 @@ function SelectRoot({
           ref={menuRef}
           id={menuId}
           position={position}
-          className={menuClassName}
-          style={
-            menuMinWidth != null ? { minWidth: menuMinWidth } : undefined
-          }
+          className={cn(
+            allowSearch ? selectMenuShellClasses : selectMenuScrollClasses,
+            menuClassName
+          )}
+          style={getMenuWidthStyle(menuWidth)}
           useCustomItemColors={false}
-          closeMenu={closeMenu}
+          autoFocus={!allowSearch}
+          closeMenu={multiple ? () => undefined : closeMenu}
           onClickItem={handleSelect}
           menuKeyDownRef={menuKeyDownRef}
         >
-          {allowSearch ? renderSearchInput() : null}
-          {renderMenuBody()}
+          {allowSearch ? (
+            <>
+              {renderSearchInput()}
+              <div
+                ref={optionsScrollRef}
+                className={selectMenuBodyScrollClasses}
+                tabIndex={-1}
+              >
+                {renderMenuBody()}
+              </div>
+            </>
+          ) : (
+            renderMenuBody()
+          )}
         </DropdownMenu>
       )
     ) : null;
 
   const control = (
     <div
+      ref={controlRef}
       className={cn(
         'group relative inline-flex w-full items-center',
         baseClasses,
-        inputSizeClasses[size],
+        multiple ? multipleSizeClasses[size] : inputSizeClasses[size],
         fieldPaddingClasses,
         wrapperBorderClasses,
         className,
@@ -579,14 +802,17 @@ function SelectRoot({
           setOpen(!isOpen);
         }}
         className={cn(
-          'min-w-0 flex-1 truncate border-0 bg-transparent p-0 text-left text-body-md outline-none',
-          selectedOption ? 'text-text' : 'text-text-placeholder',
+          'min-w-0 flex-1 border-0 bg-transparent p-0 text-left text-body-md outline-none',
+          multiple
+            ? 'flex flex-wrap items-center gap-size-xxs'
+            : 'truncate',
+          !multiple && (selectedOption ? 'text-text' : 'text-text-placeholder'),
           'focus:border-transparent focus:shadow-none',
           disabled && 'cursor-not-allowed text-text-disabled',
           loading && !disabled && 'cursor-progress'
         )}
       >
-        {selectedOption?.label ?? placeholder}
+        {renderTriggerContent()}
       </button>
 
       {hasStatus ? (
@@ -613,10 +839,10 @@ function SelectRoot({
           type="button"
           tabIndex={-1}
           disabled={disabled}
-          aria-label="Clear selection"
+          aria-label={multiple ? 'Clear all selections' : 'Clear selection'}
           className={cn(
             suffixFirstIconClasses,
-            'text-icon transition-colors',
+            'inline-flex items-center text-icon transition-colors',
             !disabled &&
               'cursor-pointer hover:text-icon-hover group-hover:text-icon-hover group-focus-within:text-icon-hover',
             disabled && 'cursor-not-allowed text-text-disabled'
@@ -630,7 +856,7 @@ function SelectRoot({
       <span
         className={cn(
           suffixIconPositionClasses,
-          'pointer-events-none text-icon transition-colors',
+          'pointer-events-none inline-flex items-center text-icon transition-colors',
           !disabled &&
             'group-hover:text-icon-hover group-focus-within:text-icon-hover',
           isOpen && !disabled && !loading && 'text-primary',

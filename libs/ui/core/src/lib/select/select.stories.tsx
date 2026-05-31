@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { useState, type ReactNode } from 'react';
 
 import { Icon } from '../icon';
+import type { DropdownPlacement } from '../dropdown';
 import { Select, type SelectSize, type SelectStatus } from './select';
 
 const selectSizes: SelectSize[] = ['sm', 'md', 'lg'];
@@ -14,6 +15,48 @@ const defaultOptions = [
   { value: 'grape', label: 'Grape' },
   { value: 'mango', label: 'Mango' },
 ];
+
+function buildLongLabelOption(index: number) {
+  const itemNumber = index + 1;
+  const lengthVariant = index % 4;
+
+  if (lengthVariant === 0) {
+    return `Item ${itemNumber}`;
+  }
+
+  if (lengthVariant === 1) {
+    return `Catalog item ${itemNumber} - organic`;
+  }
+
+  if (lengthVariant === 2) {
+    return `Premium organic catalog item ${itemNumber} with product description and sourcing details`;
+  }
+
+  return `Premium organic seasonal export-grade catalog item ${itemNumber} with extended commercial description, supplier notes, compliance metadata, packaging dimensions, cold storage handling instructions, and distributor delivery window`;
+}
+
+const manyLongLabelOptions = Array.from({ length: 10 }, (_, index) => ({
+  value: `catalog-item-${index + 1}`,
+  label: buildLongLabelOption(index),
+}));
+
+const selectPlacements: DropdownPlacement[] = [
+  'bottomLeft',
+  'bottom',
+  'bottomRight',
+  'topLeft',
+  'top',
+  'topRight',
+];
+
+const selectPlacementLabels: Record<DropdownPlacement, string> = {
+  bottomLeft: 'Bottom Left',
+  bottom: 'Bottom',
+  bottomRight: 'Bottom Right',
+  topLeft: 'Top Left',
+  top: 'Top',
+  topRight: 'Top Right',
+};
 
 const meta: Meta<typeof Select> = {
   title: 'Core/Select',
@@ -35,6 +78,7 @@ const meta: Meta<typeof Select> = {
     loading: { control: 'boolean' },
     allowClear: { control: 'boolean' },
     allowSearch: { control: 'boolean' },
+    multiple: { control: 'boolean' },
     localSearch: { control: 'boolean' },
     searchPlaceholder: { control: 'text' },
     required: { control: 'boolean' },
@@ -476,6 +520,196 @@ function RemoteSearchErrorDemo() {
 
 export const WithRemoteSearchError: Story = {
   render: () => <RemoteSearchErrorDemo />,
+};
+
+function MultipleSelectDemo() {
+  const [value, setValue] = useState<string[]>(['apple', 'banana']);
+
+  return (
+    <div className="flex max-w-sm flex-col gap-3">
+      <Select
+        label="Favorite fruits"
+        placeholder="Select fruits"
+        multiple
+        allowClear
+        value={value}
+        onChange={setValue}
+        options={defaultOptions}
+      />
+      <p className="text-body-sm text-text-description">
+        Selected: {value.length > 0 ? value.join(', ') : 'none'}
+      </p>
+    </div>
+  );
+}
+
+export const Multiple: Story = {
+  render: () => <MultipleSelectDemo />,
+};
+
+export const MultipleWithSearch: Story = {
+  render: () => (
+    <Select
+      label="Favorite fruits"
+      placeholder="Select fruits"
+      multiple
+      allowSearch
+      allowClear
+      defaultValue={['orange']}
+      options={defaultOptions}
+    />
+  ),
+};
+
+function MaxSelectedDemo() {
+  const [value, setValue] = useState<string[]>(['apple']);
+
+  return (
+    <div className="flex max-w-sm flex-col gap-3">
+      <Select
+        label="Pick up to 2 fruits"
+        placeholder="Select fruits"
+        multiple
+        maxSelected={2}
+        allowClear
+        value={value}
+        onChange={setValue}
+        options={defaultOptions}
+      />
+      <p className="text-body-sm text-text-description">
+        Selected ({value.length}/2):{' '}
+        {value.length > 0 ? value.join(', ') : 'none'}
+      </p>
+    </div>
+  );
+}
+
+export const MultipleWithMaxSelected: Story = {
+  render: () => <MaxSelectedDemo />,
+};
+
+export const ManyLongLabelOptions: Story = {
+  render: () => (
+    <div className="max-w-md">
+      <Select
+        label="Product catalog"
+        placeholder="Select a product from the catalog"
+        allowSearch
+        allowClear
+        options={manyLongLabelOptions}
+      />
+    </div>
+  ),
+};
+
+function MultipleLongContentLiveSearchDemo() {
+  const [value, setValue] = useState<string[]>(['catalog-item-1']);
+  const [lastSearch, setLastSearch] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  return (
+    <div className="flex max-w-md flex-col gap-3">
+      <Select
+        label="Product catalog"
+        placeholder="Search and select products"
+        multiple
+        allowSearch
+        localSearch
+        allowClear
+        maxSelected={4}
+        loading={loading}
+        value={value}
+        onChange={setValue}
+        onSearch={(searchValue) => {
+          setLastSearch(searchValue);
+          setLoading(true);
+
+          window.setTimeout(() => {
+            setLoading(false);
+          }, 600);
+        }}
+        options={manyLongLabelOptions}
+      />
+      <p className="text-body-sm text-text-description">
+        Search query: {lastSearch || 'none'}
+      </p>
+      <p className="text-body-sm text-text-description">
+        Loading: {loading ? 'yes' : 'no'}
+      </p>
+      <p className="text-body-sm text-text-description">
+        Selected ({value.length}/4):{' '}
+        {value.length > 0 ? value.join(', ') : 'none'}
+      </p>
+    </div>
+  );
+}
+
+export const MultipleLongContentLiveSearch: Story = {
+  render: () => <MultipleLongContentLiveSearchDemo />,
+};
+
+function SelectPlacementDemo({
+  label,
+  placement,
+  defaultOpen = true,
+}: {
+  label: string;
+  placement: DropdownPlacement;
+  defaultOpen?: boolean;
+}) {
+  return (
+    <div className="flex items-start gap-6">
+      <span className="w-48 shrink-0 pt-2 text-body-sm text-text-description">
+        {label}
+      </span>
+      <div className="w-64">
+        <Select
+          label="Favorite fruit"
+          placeholder="Select a fruit"
+          placement={placement}
+          defaultOpen={defaultOpen}
+          options={defaultOptions}
+        />
+      </div>
+    </div>
+  );
+}
+
+export const Placements: Story = {
+  parameters: {
+    layout: 'padded',
+  },
+  render: () => (
+    <div className="flex flex-col gap-16">
+      <StorySection title="Bottom placements">
+        <div className="flex flex-col gap-8 py-8">
+          {selectPlacements
+            .filter((placement) => placement.startsWith('bottom'))
+            .map((placement) => (
+              <SelectPlacementDemo
+                key={placement}
+                label={`Placement: ${selectPlacementLabels[placement]}`}
+                placement={placement}
+              />
+            ))}
+        </div>
+      </StorySection>
+
+      <StorySection title="Top placements">
+        <div className="flex flex-col gap-8 py-24">
+          {selectPlacements
+            .filter((placement) => placement.startsWith('top'))
+            .map((placement) => (
+              <SelectPlacementDemo
+                key={placement}
+                label={`Placement: ${selectPlacementLabels[placement]}`}
+                placement={placement}
+              />
+            ))}
+        </div>
+      </StorySection>
+    </div>
+  ),
 };
 
 export const AllVariants: Story = {

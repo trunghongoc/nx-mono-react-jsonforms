@@ -1,8 +1,10 @@
 export {
   Select,
   default,
+  type SelectMultipleProps,
   type SelectOptionData,
   type SelectProps,
+  type SelectSingleProps,
   type SelectSize,
   type SelectStatus,
 } from './select';

@@ -23,7 +23,6 @@ import { createPortal } from 'react-dom';
 
 import { Icon, type IconProps } from '../icon';
 import {
-  clampOverlayPosition,
   cn,
   getAnchorRect,
   type OverlayPlace,
@@ -217,6 +216,34 @@ function resolveDropdownPlacement(
   return { ...bestPosition, placement: bestPlacement };
 }
 
+function clampDropdownPosition(
+  anchor: Rect,
+  placement: DropdownPlacement,
+  top: number,
+  left: number,
+  overlayWidth: number,
+  overlayHeight: number
+) {
+  const viewportWidth = window.innerWidth;
+  const viewportHeight = window.innerHeight;
+
+  const minLeft = VIEWPORT_PADDING;
+  const maxLeft = viewportWidth - overlayWidth - VIEWPORT_PADDING;
+  const minTop = VIEWPORT_PADDING;
+  const maxTop = viewportHeight - overlayHeight - VIEWPORT_PADDING;
+
+  const nextLeft = Math.min(Math.max(left, minLeft), maxLeft);
+  let nextTop = Math.min(Math.max(top, minTop), maxTop);
+
+  if (placement.startsWith('bottom')) {
+    nextTop = Math.max(nextTop, anchor.top + anchor.height + DROPDOWN_GAP);
+  } else if (placement.startsWith('top')) {
+    nextTop = Math.min(nextTop, anchor.top - overlayHeight - DROPDOWN_GAP);
+  }
+
+  return { top: nextTop, left: nextLeft };
+}
+
 export function useDropdownPosition({
   isOpen,
   mounted,
@@ -227,8 +254,8 @@ export function useDropdownPosition({
 }: {
   isOpen: boolean;
   mounted: boolean;
-  anchorRef: RefObject<HTMLButtonElement | null>;
-  panelRef: RefObject<HTMLDivElement | null>;
+  anchorRef: RefObject<HTMLElement | null>;
+  panelRef: RefObject<HTMLElement | null>;
   placement?: DropdownPlacement;
   deps?: unknown[];
 }) {
@@ -249,13 +276,11 @@ export function useDropdownPosition({
       placement
     );
 
-    const nextPosition = clampOverlayPosition(
-      {
-        top: resolved.top,
-        left: resolved.left,
-        place: resolved.placement,
-        arrow: { side: 'top', offset: 0 },
-      },
+    const nextPosition = clampDropdownPosition(
+      anchorRect,
+      resolved.placement,
+      resolved.top,
+      resolved.left,
       panelRect.width,
       panelRect.height
     );
@@ -283,11 +308,27 @@ export function useDropdownPosition({
     window.addEventListener('resize', handleReposition);
     window.addEventListener('scroll', handleReposition, true);
 
+    const resizeObserver =
+      typeof ResizeObserver !== 'undefined'
+        ? new ResizeObserver(handleReposition)
+        : null;
+
+    if (anchorRef.current) {
+      resizeObserver?.observe(anchorRef.current);
+    }
+
+    if (panelRef.current) {
+      resizeObserver?.observe(panelRef.current);
+    }
+
+    requestAnimationFrame(handleReposition);
+
     return () => {
       window.removeEventListener('resize', handleReposition);
       window.removeEventListener('scroll', handleReposition, true);
+      resizeObserver?.disconnect();
     };
-  }, [isOpen, mounted, updatePosition]);
+  }, [anchorRef, isOpen, mounted, panelRef, updatePosition]);
 
   return position;
 }
@@ -343,6 +384,14 @@ function enhanceMenuChildren(
       return cloneElement(itemChild, { itemIndex });
     }
 
+    const nestedChildren = (child.props as { children?: ReactNode }).children;
+
+    if (nestedChildren != null) {
+      return cloneElement(child as ReactElement<{ children?: ReactNode }>, {
+        children: enhanceMenuChildren(nestedChildren, itemIndexRef),
+      });
+    }
+
     return child;
   });
 }
@@ -368,6 +417,13 @@ function collectNavigableItemIndexes(children: ReactNode) {
           indexes.push(itemIndex);
         }
         itemIndex += 1;
+        return;
+      }
+
+      const nestedChildren = (child.props as { children?: ReactNode }).children;
+
+      if (nestedChildren != null) {
+        walk(nestedChildren);
       }
     });
   };
@@ -424,6 +480,7 @@ export const DropdownMenu = forwardRef<
     menuKeyDownRef?: RefObject<
       ((event: ReactKeyboardEvent<HTMLElement>) => void) | null
     >;
+    autoFocus?: boolean;
   }
 >(function DropdownMenu(
   {
@@ -436,12 +493,14 @@ export const DropdownMenu = forwardRef<
     closeMenu,
     onClickItem,
     menuKeyDownRef,
+    autoFocus = true,
   },
   ref
 ) {
   const itemIndexRef = useRef(0);
   itemIndexRef.current = 0;
   const itemRefs = useRef(new Map<number, HTMLElement>());
+  const scrollActiveItemIntoViewRef = useRef(false);
   const [activeItemIndex, setActiveItemIndex] = useState<number | null>(null);
 
   const menuChildren = enhanceMenuChildren(children, itemIndexRef);
@@ -465,15 +524,19 @@ export const DropdownMenu = forwardRef<
   }, [children]);
 
   useLayoutEffect(() => {
-    if (typeof ref !== 'function') {
-      ref?.current?.focus({ preventScroll: true });
-    }
-  }, [ref]);
-
-  useEffect(() => {
-    if (activeItemIndex === null) {
+    if (!autoFocus || typeof ref === 'function') {
       return;
     }
+
+    ref?.current?.focus({ preventScroll: true });
+  }, [autoFocus, ref]);
+
+  useEffect(() => {
+    if (activeItemIndex === null || !scrollActiveItemIntoViewRef.current) {
+      return;
+    }
+
+    scrollActiveItemIntoViewRef.current = false;
 
     itemRefs.current
       .get(activeItemIndex)
@@ -492,6 +555,7 @@ export const DropdownMenu = forwardRef<
     (event: ReactKeyboardEvent<HTMLElement>) => {
       if (event.key === 'ArrowDown') {
         event.preventDefault();
+        scrollActiveItemIntoViewRef.current = true;
         setActiveItemIndex((current) =>
           getNextActiveItemIndex(navigableItemIndexes, current, 1)
         );
@@ -500,6 +564,7 @@ export const DropdownMenu = forwardRef<
 
       if (event.key === 'ArrowUp') {
         event.preventDefault();
+        scrollActiveItemIntoViewRef.current = true;
         setActiveItemIndex((current) =>
           getNextActiveItemIndex(navigableItemIndexes, current, -1)
         );
