@@ -21,4 +21,5 @@ export * from './lib/page-header';
 export * from './lib/page-left-sidebar';
 export * from './lib/page-layout';
 export * from './lib/grid';
+export * from './lib/message';
 export { tokens, type Tokens } from './tokens.config';
