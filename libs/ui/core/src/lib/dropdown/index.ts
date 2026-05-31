@@ -15,3 +15,7 @@ export {
   type DropdownItemColors,
   type DropdownItemProps,
 } from './dropdown-item';
+export {
+  DropdownSubMenu,
+  type DropdownSubMenuProps,
+} from './dropdown-submenu';

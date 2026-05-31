@@ -2,10 +2,7 @@
 
 import {
   Children,
-  Fragment,
-  cloneElement,
   forwardRef,
-  isValidElement,
   useCallback,
   useEffect,
   useId,
@@ -15,7 +12,6 @@ import {
   type CSSProperties,
   type KeyboardEvent as ReactKeyboardEvent,
   type MouseEventHandler,
-  type ReactElement,
   type ReactNode,
   type RefObject,
 } from 'react';
@@ -29,13 +25,22 @@ import {
   type Rect,
 } from '../overlay';
 import { DropdownMenuContext } from './dropdown-context';
-import { DropdownItem, type DropdownItemProps } from './dropdown-item';
+import { DropdownItem } from './dropdown-item';
+import { DropdownSubMenu } from './dropdown-submenu';
 
 export type DropdownVariant = 'inline' | 'basic';
 
 export type DropdownPlacement = Extract<
   OverlayPlace,
-  'bottomLeft' | 'bottom' | 'bottomRight' | 'topLeft' | 'top' | 'topRight'
+  | 'bottomLeft'
+  | 'bottom'
+  | 'bottomRight'
+  | 'topLeft'
+  | 'top'
+  | 'topRight'
+  | 'right'
+  | 'rightTop'
+  | 'rightBottom'
 >;
 
 export interface DropdownColors {
@@ -60,6 +65,7 @@ export interface DropdownProps {
   onOpenChange?: (open: boolean) => void;
   onClick?: MouseEventHandler<HTMLButtonElement>;
   onClickItem?: (content: ReactNode, index: number) => void;
+  /** Classes applied to the trigger button (e.g. `w-full` for full-width basic triggers). */
   className?: string;
   menuClassName?: string;
 }
@@ -74,6 +80,9 @@ const DROPDOWN_PLACEMENTS: DropdownPlacement[] = [
   'topLeft',
   'top',
   'topRight',
+  'right',
+  'rightTop',
+  'rightBottom',
 ];
 
 const menuContentClasses = [
@@ -82,7 +91,7 @@ const menuContentClasses = [
 ].join(' ');
 
 const triggerBaseClasses =
-  'inline-flex w-fit max-w-full cursor-pointer items-center gap-size-xxs border-0 bg-transparent p-0 text-body-md font-normal transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-control-outline focus-visible:ring-offset-2 disabled:select-none [&_svg]:!text-current';
+  'max-w-full cursor-pointer items-center gap-size-xxs border-0 bg-transparent p-0 text-body-md font-normal transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-control-outline focus-visible:ring-offset-2 disabled:select-none [&_svg]:!text-current';
 
 const inlineTriggerClasses = [
   'text-primary',
@@ -111,6 +120,28 @@ function computeDropdownPosition(
   const anchorBottom = anchor.top + anchor.height;
   const anchorRight = anchor.left + anchor.width;
   const anchorCenterX = anchor.left + anchor.width / 2;
+  const anchorCenterY = anchor.top + anchor.height / 2;
+
+  if (placement === 'right') {
+    return {
+      top: anchorCenterY - overlayHeight / 2,
+      left: anchorRight + DROPDOWN_GAP,
+    };
+  }
+
+  if (placement === 'rightTop') {
+    return {
+      top: anchor.top,
+      left: anchorRight + DROPDOWN_GAP,
+    };
+  }
+
+  if (placement === 'rightBottom') {
+    return {
+      top: anchor.top + anchor.height - overlayHeight,
+      left: anchorRight + DROPDOWN_GAP,
+    };
+  }
 
   if (placement === 'bottomLeft') {
     return { top: anchorBottom + DROPDOWN_GAP, left: anchor.left };
@@ -232,13 +263,15 @@ function clampDropdownPosition(
   const minTop = VIEWPORT_PADDING;
   const maxTop = viewportHeight - overlayHeight - VIEWPORT_PADDING;
 
-  const nextLeft = Math.min(Math.max(left, minLeft), maxLeft);
+  let nextLeft = Math.min(Math.max(left, minLeft), maxLeft);
   let nextTop = Math.min(Math.max(top, minTop), maxTop);
 
   if (placement.startsWith('bottom')) {
     nextTop = Math.max(nextTop, anchor.top + anchor.height + DROPDOWN_GAP);
   } else if (placement.startsWith('top')) {
     nextTop = Math.min(nextTop, anchor.top - overlayHeight - DROPDOWN_GAP);
+  } else if (placement.startsWith('right')) {
+    nextLeft = Math.max(nextLeft, anchor.left + anchor.width + DROPDOWN_GAP);
   }
 
   return { top: nextTop, left: nextLeft };
@@ -360,78 +393,6 @@ function buildMenuStyle(colors?: DropdownColors): CSSProperties | undefined {
   };
 }
 
-function enhanceMenuChildren(
-  children: ReactNode,
-  itemIndexRef: { current: number }
-): ReactNode {
-  return Children.map(children, (child) => {
-    if (!isValidElement(child)) {
-      return child;
-    }
-
-    if (child.type === Fragment) {
-      const fragmentChild = child as ReactElement<{ children?: ReactNode }>;
-      return cloneElement(fragmentChild, {
-        children: enhanceMenuChildren(fragmentChild.props.children, itemIndexRef),
-      });
-    }
-
-    if (child.type === DropdownItem) {
-      const itemChild = child as ReactElement<DropdownItemProps>;
-      const itemIndex = itemIndexRef.current;
-      itemIndexRef.current += 1;
-
-      return cloneElement(itemChild, { itemIndex });
-    }
-
-    const nestedChildren = (child.props as { children?: ReactNode }).children;
-
-    if (nestedChildren != null) {
-      return cloneElement(child as ReactElement<{ children?: ReactNode }>, {
-        children: enhanceMenuChildren(nestedChildren, itemIndexRef),
-      });
-    }
-
-    return child;
-  });
-}
-
-function collectNavigableItemIndexes(children: ReactNode) {
-  const indexes: number[] = [];
-  let itemIndex = 0;
-
-  const walk = (nodes: ReactNode) => {
-    Children.forEach(nodes, (child) => {
-      if (!isValidElement(child)) {
-        return;
-      }
-
-      if (child.type === Fragment) {
-        walk((child.props as { children?: ReactNode }).children);
-        return;
-      }
-
-      if (child.type === DropdownItem) {
-        const itemChild = child as ReactElement<DropdownItemProps>;
-        if (!itemChild.props.disabled) {
-          indexes.push(itemIndex);
-        }
-        itemIndex += 1;
-        return;
-      }
-
-      const nestedChildren = (child.props as { children?: ReactNode }).children;
-
-      if (nestedChildren != null) {
-        walk(nestedChildren);
-      }
-    });
-  };
-
-  walk(children);
-  return indexes;
-}
-
 function getNextActiveItemIndex(
   navigableIndexes: number[],
   currentIndex: number | null,
@@ -481,6 +442,8 @@ export const DropdownMenu = forwardRef<
       ((event: ReactKeyboardEvent<HTMLElement>) => void) | null
     >;
     autoFocus?: boolean;
+    onMouseEnter?: MouseEventHandler<HTMLDivElement>;
+    onMouseLeave?: MouseEventHandler<HTMLDivElement>;
   }
 >(function DropdownMenu(
   {
@@ -494,33 +457,54 @@ export const DropdownMenu = forwardRef<
     onClickItem,
     menuKeyDownRef,
     autoFocus = true,
+    onMouseEnter,
+    onMouseLeave,
   },
   ref
 ) {
-  const itemIndexRef = useRef(0);
-  itemIndexRef.current = 0;
+  const itemIndexCounterRef = useRef(0);
   const itemRefs = useRef(new Map<number, HTMLElement>());
+  const itemDisabledRef = useRef(new Map<number, boolean>());
+  const navigableItemIndexesRef = useRef<number[]>([]);
   const scrollActiveItemIntoViewRef = useRef(false);
   const [activeItemIndex, setActiveItemIndex] = useState<number | null>(null);
+  const [openSubMenuIndex, setOpenSubMenuIndex] = useState<number | null>(null);
 
-  const menuChildren = enhanceMenuChildren(children, itemIndexRef);
-  const navigableItemIndexes = collectNavigableItemIndexes(children);
+  itemIndexCounterRef.current = 0;
+
+  const allocateItemIndex = useCallback(() => {
+    const index = itemIndexCounterRef.current;
+    itemIndexCounterRef.current += 1;
+    return index;
+  }, []);
+
+  const syncNavigableItemIndexes = useCallback(() => {
+    navigableItemIndexesRef.current = [...itemRefs.current.keys()]
+      .filter((index) => !itemDisabledRef.current.get(index))
+      .sort((left, right) => left - right);
+  }, []);
 
   const registerItemRef = useCallback(
-    (index: number, element: HTMLElement | null) => {
+    (index: number, element: HTMLElement | null, disabled = false) => {
       if (element) {
         itemRefs.current.set(index, element);
-        return;
+        itemDisabledRef.current.set(index, disabled);
+      } else {
+        itemRefs.current.delete(index);
+        itemDisabledRef.current.delete(index);
       }
 
-      itemRefs.current.delete(index);
+      syncNavigableItemIndexes();
     },
-    []
+    [syncNavigableItemIndexes]
   );
 
   useEffect(() => {
     setActiveItemIndex(null);
+    setOpenSubMenuIndex(null);
     itemRefs.current.clear();
+    itemDisabledRef.current.clear();
+    navigableItemIndexesRef.current = [];
   }, [children]);
 
   useLayoutEffect(() => {
@@ -557,7 +541,7 @@ export const DropdownMenu = forwardRef<
         event.preventDefault();
         scrollActiveItemIntoViewRef.current = true;
         setActiveItemIndex((current) =>
-          getNextActiveItemIndex(navigableItemIndexes, current, 1)
+          getNextActiveItemIndex(navigableItemIndexesRef.current, current, 1)
         );
         return;
       }
@@ -566,7 +550,7 @@ export const DropdownMenu = forwardRef<
         event.preventDefault();
         scrollActiveItemIntoViewRef.current = true;
         setActiveItemIndex((current) =>
-          getNextActiveItemIndex(navigableItemIndexes, current, -1)
+          getNextActiveItemIndex(navigableItemIndexesRef.current, current, -1)
         );
         return;
       }
@@ -580,7 +564,7 @@ export const DropdownMenu = forwardRef<
         activateActiveItem();
       }
     },
-    [activateActiveItem, activeItemIndex, navigableItemIndexes]
+    [activateActiveItem, activeItemIndex]
   );
 
   useLayoutEffect(() => {
@@ -608,6 +592,9 @@ export const DropdownMenu = forwardRef<
         useCustomItemColors,
         activeItemIndex,
         setActiveItemIndex,
+        openSubMenuIndex,
+        setOpenSubMenuIndex,
+        allocateItemIndex,
         registerItemRef,
         closeMenu,
         notifyItemClick,
@@ -619,6 +606,9 @@ export const DropdownMenu = forwardRef<
         role="menu"
         tabIndex={-1}
         onKeyDown={handleMenuKeyDown}
+        onMouseEnter={onMouseEnter}
+        onMouseLeave={onMouseLeave}
+        data-dropdown-menu
         className={cn(
           'fixed z-dropdown min-w-[calc(var(--spacing-size-lg)*5)] rounded-border-lg bg-bg-elevated p-padding-xxs shadow-box-secondary',
           menuContentClasses,
@@ -630,7 +620,7 @@ export const DropdownMenu = forwardRef<
           ...style,
         }}
       >
-        {menuChildren}
+        {children}
       </div>
     </DropdownMenuContext.Provider>
   );
@@ -705,7 +695,8 @@ function DropdownRoot({
 
       if (
         triggerRef.current?.contains(target) ||
-        menuRef.current?.contains(target)
+        menuRef.current?.contains(target) ||
+        (target instanceof Element && target.closest('[data-dropdown-menu]'))
       ) {
         return;
       }
@@ -792,6 +783,8 @@ function DropdownRoot({
         }}
         className={cn(
           triggerBaseClasses,
+          variant === 'inline' && 'inline-flex',
+          variant === 'basic' && 'flex justify-between',
           variant === 'inline' && inlineTriggerClasses,
           variant === 'basic' && basicTriggerClasses,
           variant === 'basic' &&
@@ -803,7 +796,14 @@ function DropdownRoot({
         )}
         style={triggerStyle}
       >
-        <span>{label}</span>
+        <span
+          className={cn(
+            'min-w-0',
+            variant === 'basic' && 'flex-1 text-left'
+          )}
+        >
+          {label}
+        </span>
         {loading ? (
           <Icon name="loading" size="sm" spin />
         ) : iconProps ? (
@@ -817,6 +817,7 @@ function DropdownRoot({
 
 export const Dropdown = Object.assign(DropdownRoot, {
   Item: DropdownItem,
+  SubMenu: DropdownSubMenu,
 });
 
 export default Dropdown;

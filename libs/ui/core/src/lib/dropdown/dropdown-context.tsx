@@ -4,7 +4,14 @@ export interface DropdownMenuContextValue {
   useCustomItemColors: boolean;
   activeItemIndex: number | null;
   setActiveItemIndex: (index: number | null) => void;
-  registerItemRef: (index: number, element: HTMLElement | null) => void;
+  openSubMenuIndex: number | null;
+  setOpenSubMenuIndex: (index: number | null) => void;
+  allocateItemIndex: () => number;
+  registerItemRef: (
+    index: number,
+    element: HTMLElement | null,
+    disabled?: boolean
+  ) => void;
   closeMenu: () => void;
   notifyItemClick: (content: ReactNode, index: number) => void;
 }
@@ -18,11 +25,16 @@ export function useDropdownMenuContext() {
 
 export function mergeItemRef(
   index: number,
-  registerItemRef: (index: number, element: HTMLElement | null) => void,
-  ref?: Ref<HTMLElement>
+  registerItemRef: (
+    index: number,
+    element: HTMLElement | null,
+    disabled?: boolean
+  ) => void,
+  ref?: Ref<HTMLElement>,
+  disabled = false
 ) {
   return (element: HTMLElement | null) => {
-    registerItemRef(index, element);
+    registerItemRef(index, element, disabled);
 
     if (typeof ref === 'function') {
       ref(element);

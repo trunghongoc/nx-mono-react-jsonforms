@@ -1,6 +1,7 @@
 import {
   createElement,
   forwardRef,
+  useRef,
   type ComponentPropsWithoutRef,
   type CSSProperties,
   type ElementType,
@@ -36,8 +37,6 @@ export interface DropdownItemProps {
   as?: DropdownItemAs;
   asProps?: DropdownItemAsProps;
   onClick?: MouseEventHandler<HTMLElement>;
-  /** @internal */
-  itemIndex?: number;
 }
 
 function getActiveItemClasses({
@@ -108,7 +107,7 @@ function getItemClassName({
   asClassName?: string;
 }) {
   return cn(
-    'rounded-border-sm px-padding-sm py-padding-xxs text-body-md font-normal outline-none',
+    'w-full rounded-border-sm px-padding-sm py-padding-xxs text-body-md font-normal outline-none',
     getAsElementClasses(as),
     disabled
       ? 'cursor-not-allowed select-none text-text-disabled'
@@ -140,11 +139,11 @@ export const DropdownItem = forwardRef<HTMLElement, DropdownItemProps>(
       as,
       asProps,
       onClick,
-      itemIndex = 0,
     },
     ref
   ) {
     const context = useDropdownMenuContext();
+    const assignedIndexRef = useRef<number | null>(null);
 
     if (!context) {
       if (process.env.NODE_ENV !== 'production') {
@@ -157,10 +156,17 @@ export const DropdownItem = forwardRef<HTMLElement, DropdownItemProps>(
       useCustomItemColors,
       activeItemIndex,
       setActiveItemIndex,
+      allocateItemIndex,
       registerItemRef,
       closeMenu,
       notifyItemClick,
     } = context;
+
+    if (assignedIndexRef.current === null) {
+      assignedIndexRef.current = allocateItemIndex();
+    }
+
+    const itemIndex = assignedIndexRef.current;
     const hasItemColors = colors?.text != null || colors?.hoverBg != null;
     const isActive = !disabled && activeItemIndex === itemIndex;
     const Component: ElementType = as ?? 'div';
@@ -207,7 +213,7 @@ export const DropdownItem = forwardRef<HTMLElement, DropdownItemProps>(
       Component,
       {
         ...restAsProps,
-        ref: mergeItemRef(itemIndex, registerItemRef, ref),
+        ref: mergeItemRef(itemIndex, registerItemRef, ref, disabled),
         role: 'menuitem',
         tabIndex: -1,
         'aria-disabled': disabled || undefined,

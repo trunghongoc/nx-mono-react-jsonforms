@@ -2,9 +2,79 @@ import type { Meta, StoryObj } from '@storybook/react';
 
 import { Breadcrumb } from '../breadcrumb';
 import { Button } from '../button';
-import { Icon } from '../icon';
+import { Divider } from '../divider';
+import { Dropdown } from '../dropdown';
+import { Icon, type IconName } from '../icon';
 import { H3, Span } from '../text';
 import { PageHeader } from './page-header';
+
+function DropdownMenuItem({ icon, label }: { icon: IconName; label: string }) {
+  return (
+    <span className="inline-flex items-center gap-size-xs">
+      <Icon name={icon} size="sm" className="shrink-0" />
+      {label}
+    </span>
+  );
+}
+
+function AccountMenu() {
+  return (
+    <>
+      <Dropdown.Item>
+        <DropdownMenuItem icon="user" label="Profile" />
+      </Dropdown.Item>
+      <Dropdown.Item>
+        <DropdownMenuItem icon="setting" label="Settings" />
+      </Dropdown.Item>
+      <Dropdown.Item>
+        <DropdownMenuItem icon="bell" label="Notifications" />
+      </Dropdown.Item>
+      <Divider />
+      <Dropdown.Item>
+        <DropdownMenuItem icon="logout" label="Sign out" />
+      </Dropdown.Item>
+    </>
+  );
+}
+
+function MoreActionsMenu() {
+  return (
+    <>
+      <Dropdown.Item>Duplicate</Dropdown.Item>
+      <Dropdown.Item>Export</Dropdown.Item>
+      <Divider />
+      <Dropdown.Item>
+        <DropdownMenuItem icon="delete" label="Delete" />
+      </Dropdown.Item>
+    </>
+  );
+}
+
+function AccountDropdown() {
+  return (
+    <Dropdown
+      label="Account"
+      variant="basic"
+      icon={{ name: 'user' }}
+      placement="bottomRight"
+    >
+      <AccountMenu />
+    </Dropdown>
+  );
+}
+
+function MoreActionsDropdown() {
+  return (
+    <Dropdown
+      label="More"
+      variant="basic"
+      icon={{ name: 'ellipsis' }}
+      placement="bottomRight"
+    >
+      <MoreActionsMenu />
+    </Dropdown>
+  );
+}
 
 const meta: Meta<typeof PageHeader> = {
   title: 'Core/PageHeader',
@@ -75,6 +145,7 @@ export const Default: Story = {
       'Manage settings, deployment history, and environment variables for this application.',
     extra: (
       <>
+        <MoreActionsDropdown />
         <Button type="default">Share</Button>
         <Button type="primary">Deploy</Button>
       </>
@@ -109,6 +180,7 @@ export const WithAvatarAndTags: Story = {
     tags: <StatusTags />,
     extra: (
       <>
+        <AccountDropdown />
         <Button type="default">Settings</Button>
         <Button type="primary">Open docs</Button>
       </>
@@ -199,6 +271,22 @@ const navItems = [
   { key: 'settings', label: 'Settings', icon: 'setting' as const },
 ];
 
+export const WithDropdownMenu: Story = {
+  name: 'With dropdown menu',
+  args: {
+    title: 'Application detail',
+    subtitle: 'Page actions and account menus use Dropdown in the extra slot.',
+    extra: (
+      <>
+        <MoreActionsDropdown />
+        <AccountDropdown />
+        <Button type="primary">Deploy</Button>
+      </>
+    ),
+    bordered: true,
+  },
+};
+
 export const StickyBarLayout: Story = {
   name: 'Sticky bar layout',
   parameters: {
@@ -225,6 +313,7 @@ export const StickyBarLayout: Story = {
             <Button type="text" iconOnly aria-label="Notifications">
               <Icon name="bell" />
             </Button>
+            <AccountDropdown />
             <Button type="default" size="sm">
               Sign in
             </Button>

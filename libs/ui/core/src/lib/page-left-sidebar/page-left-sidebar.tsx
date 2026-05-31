@@ -93,10 +93,13 @@ const headerClasses =
 
 const bodyClasses = 'flex min-h-0 flex-1 flex-col overflow-y-auto overflow-x-hidden';
 
-const navClasses = 'flex flex-col gap-size-xxs p-padding-xs';
+const navClasses =
+  'flex w-full flex-col gap-size-xxs p-padding-xs [&>a]:w-full [&>button]:w-full';
 
 const footerClasses =
-  'mt-auto shrink-0 border-t border-split px-padding-content-horizontal py-padding-content-vertical screen-md:px-padding-content-horizontal-lg screen-md:py-padding-content-vertical-lg';
+  'mt-auto flex w-full shrink-0 flex-col gap-size-xs border-t border-split px-padding-content-horizontal py-padding-content-vertical screen-md:px-padding-content-horizontal-lg screen-md:py-padding-content-vertical-lg [&>*]:w-full';
+
+const headerSlotClasses = 'w-full [&>*]:w-full';
 
 const triggerClasses =
   'flex shrink-0 items-center justify-center border-t border-split px-padding-xs py-padding-xxs';
@@ -290,7 +293,9 @@ const PageLeftSidebarRoot = forwardRef<HTMLElement, PageLeftSidebarProps>(
           }}
           {...props}
         >
-          {header ? <div className={headerClasses}>{header}</div> : null}
+          {header ? (
+            <div className={cn(headerClasses, headerSlotClasses)}>{header}</div>
+          ) : null}
 
           <div className={bodyClasses}>
             <nav className={navClasses}>

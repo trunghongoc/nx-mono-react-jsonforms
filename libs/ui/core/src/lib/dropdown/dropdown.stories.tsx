@@ -152,6 +152,8 @@ const meta: Meta<typeof Dropdown> = {
     disabled: { control: 'boolean' },
     loading: { control: 'boolean' },
     label: { control: 'text' },
+    className: { control: 'text' },
+    menuClassName: { control: 'text' },
   },
   args: {
     label: 'Dropdown',
@@ -183,12 +185,10 @@ function PlacementDemo({
   label,
   placement,
   variant,
-  defaultOpen = true,
 }: {
   label: string;
   placement: DropdownPlacement;
   variant: DropdownVariant;
-  defaultOpen?: boolean;
 }) {
   return (
     <div className="flex items-start gap-6">
@@ -199,7 +199,6 @@ function PlacementDemo({
         label="Dropdown"
         variant={variant}
         placement={placement}
-        defaultOpen={defaultOpen}
       >
         <SampleMenu />
       </Dropdown>
@@ -228,6 +227,16 @@ export const Basic: Story = {
     <Dropdown {...args} variant="basic">
       <SampleMenu />
     </Dropdown>
+  ),
+};
+
+export const FullWidthTrigger: Story = {
+  render: () => (
+    <div className="w-80 max-w-full">
+      <Dropdown label="Full width dropdown" variant="basic" className="w-full">
+        <SampleMenu />
+      </Dropdown>
+    </div>
   ),
 };
 
@@ -280,7 +289,7 @@ export const BottomPlacements: Story = {
         {(['bottomLeft', 'bottom', 'bottomRight'] as const).map((placement) => (
           <PlacementDemo
             key={`inline-${placement}`}
-            label={`Open Menu: Yes | Placement: ${placementLabels[placement]}`}
+            label={`Open Menu: No | Placement: ${placementLabels[placement]}`}
             placement={placement}
             variant="inline"
           />
@@ -290,7 +299,7 @@ export const BottomPlacements: Story = {
         {(['bottomLeft', 'bottom', 'bottomRight'] as const).map((placement) => (
           <PlacementDemo
             key={`basic-${placement}`}
-            label={`Open Menu: Yes | Placement: ${placementLabels[placement]}`}
+            label={`Open Menu: No | Placement: ${placementLabels[placement]}`}
             placement={placement}
             variant="basic"
           />
@@ -307,7 +316,7 @@ export const TopPlacements: Story = {
         {(['topLeft', 'top', 'topRight'] as const).map((placement) => (
           <PlacementDemo
             key={`inline-${placement}`}
-            label={`Open Menu: Yes | Placement: ${placementLabels[placement]}`}
+            label={`Open Menu: No | Placement: ${placementLabels[placement]}`}
             placement={placement}
             variant="inline"
           />
@@ -317,7 +326,7 @@ export const TopPlacements: Story = {
         {(['topLeft', 'top', 'topRight'] as const).map((placement) => (
           <PlacementDemo
             key={`basic-${placement}`}
-            label={`Open Menu: Yes | Placement: ${placementLabels[placement]}`}
+            label={`Open Menu: No | Placement: ${placementLabels[placement]}`}
             placement={placement}
             variant="basic"
           />
@@ -382,7 +391,7 @@ export const Controlled: Story = {
 export const AutoPlacement: Story = {
   render: () => (
     <div className="flex h-[420px] w-full items-end justify-end p-6">
-      <Dropdown label="Dropdown" variant="basic" defaultOpen>
+      <Dropdown label="Dropdown" variant="basic">
         <SampleMenu />
       </Dropdown>
     </div>
@@ -391,7 +400,7 @@ export const AutoPlacement: Story = {
 
 export const WithItemIcons: Story = {
   render: () => (
-    <Dropdown label="Dropdown" variant="basic" defaultOpen>
+    <Dropdown label="Dropdown" variant="basic">
       <MenuWithIcons />
     </Dropdown>
   ),
@@ -399,7 +408,7 @@ export const WithItemIcons: Story = {
 
 export const WithLabel: Story = {
   render: () => (
-    <Dropdown label="Dropdown" variant="basic" defaultOpen>
+    <Dropdown label="Dropdown" variant="basic">
       <MenuWithLabel />
     </Dropdown>
   ),
@@ -407,7 +416,7 @@ export const WithLabel: Story = {
 
 export const DisabledItems: Story = {
   render: () => (
-    <Dropdown label="Dropdown" variant="basic" defaultOpen>
+    <Dropdown label="Dropdown" variant="basic">
       <Dropdown.Item>Enabled item</Dropdown.Item>
       <Dropdown.Item disabled>Disabled item</Dropdown.Item>
       <Dropdown.Item>Enabled item</Dropdown.Item>
@@ -421,7 +430,7 @@ export const DisabledItems: Story = {
 
 export const CustomItemColor: Story = {
   render: () => (
-    <Dropdown label="Dropdown" variant="basic" defaultOpen>
+    <Dropdown label="Dropdown" variant="basic">
       <Dropdown.Item>Dropdown List Item</Dropdown.Item>
       <Dropdown.Item>Dropdown List Item</Dropdown.Item>
       <Dropdown.Item
@@ -442,7 +451,7 @@ export const CustomItemColor: Story = {
 export const WithAsProp: Story = {
   render: () => (
     <MemoryRouter>
-      <Dropdown label="Dropdown" variant="basic" defaultOpen>
+      <Dropdown label="Dropdown" variant="basic">
         <Dropdown.Item>Default div item</Dropdown.Item>
         <Dropdown.Item as="span">Span item</Dropdown.Item>
         <Dropdown.Item as="label" asProps={{ htmlFor: 'dropdown-demo-input' }}>
@@ -464,6 +473,33 @@ export const Closed: Story = {
       </Dropdown>
       <Dropdown label="Dropdown" variant="basic">
         <SampleMenu />
+      </Dropdown>
+    </div>
+  ),
+};
+
+function ThreeLevelNestedMenu() {
+  return (
+    <>
+      <Dropdown.Item>Level 1 — Item A</Dropdown.Item>
+      <Dropdown.SubMenu label="Level 2 — Submenu">
+        <Dropdown.Item>Level 2 — Item B</Dropdown.Item>
+        <Dropdown.SubMenu label="Level 3 — Submenu">
+          <Dropdown.Item>Level 3 — Item C</Dropdown.Item>
+          <Dropdown.Item>Level 3 — Item D</Dropdown.Item>
+        </Dropdown.SubMenu>
+        <Dropdown.Item>Level 2 — Item E</Dropdown.Item>
+      </Dropdown.SubMenu>
+      <Dropdown.Item>Level 1 — Item F</Dropdown.Item>
+    </>
+  );
+}
+
+export const NestedDropdown: Story = {
+  render: () => (
+    <div className="p-12">
+      <Dropdown label="Actions" variant="basic">
+        <ThreeLevelNestedMenu />
       </Dropdown>
     </div>
   ),
