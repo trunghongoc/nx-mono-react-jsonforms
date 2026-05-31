@@ -11,6 +11,7 @@ export * from './lib/ribbon';
 export * from './lib/divider';
 export * from './lib/icon';
 export * from './lib/input';
+export * from './lib/select';
 export * from './lib/overlay';
 export * from './lib/popover';
 export * from './lib/tooltip';

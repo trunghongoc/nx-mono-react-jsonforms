@@ -1,6 +1,8 @@
 export {
   Dropdown,
+  DropdownMenu,
   default,
+  useDropdownPosition,
   type DropdownColors,
   type DropdownPlacement,
   type DropdownProps,

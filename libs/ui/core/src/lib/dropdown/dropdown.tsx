@@ -217,7 +217,7 @@ function resolveDropdownPlacement(
   return { ...bestPosition, placement: bestPlacement };
 }
 
-function useDropdownPosition({
+export function useDropdownPosition({
   isOpen,
   mounted,
   anchorRef,
@@ -410,7 +410,7 @@ function hasMenuContent(children: ReactNode) {
   );
 }
 
-const DropdownMenu = forwardRef<
+export const DropdownMenu = forwardRef<
   HTMLDivElement,
   {
     id: string;
