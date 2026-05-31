@@ -5,6 +5,7 @@ export * from './lib/radio';
 export * from './lib/switch';
 export * from './lib/avatar';
 export * from './lib/badge';
+export * from './lib/tag';
 export * from './lib/ribbon';
 export * from './lib/divider';
 export * from './lib/icon';
