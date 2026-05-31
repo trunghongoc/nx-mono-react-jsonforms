@@ -261,6 +261,44 @@ export const Clickable: Story = {
   ),
 };
 
+export const WithBadge: Story = {
+  render: () => (
+    <div className="flex flex-col gap-8">
+      <StorySection title="Dot badge">
+        <Avatar
+          icon="user"
+          badge={{ variant: 'dot', type: 'error', 'aria-label': 'Online' }}
+        />
+        <Avatar
+          text="Nguyen Van A"
+          badge={{ variant: 'dot', type: 'success', 'aria-label': 'Online' }}
+        />
+        <Avatar
+          src="https://api.dicebear.com/7.x/avataaars/svg?seed=Badge"
+          alt="Badge avatar"
+          badge={{ variant: 'dot', type: 'primary', 'aria-label': 'New' }}
+        />
+      </StorySection>
+      <StorySection title="Count badge">
+        <Avatar
+          icon="user"
+          size="lg"
+          badge={{ variant: 'md', type: 'error', value: 3 }}
+        />
+        <Avatar
+          text="Nguyen Van A"
+          badge={{ variant: 'md', type: 'error', value: 101, maxNumber: 99 }}
+        />
+        <Avatar
+          src="https://api.dicebear.com/7.x/avataaars/svg?seed=Count"
+          alt="Count badge avatar"
+          badge={{ variant: 'sm', type: 'primary', value: 'New' }}
+        />
+      </StorySection>
+    </div>
+  ),
+};
+
 export const Default: Story = {
   render: (args) => <Avatar {...args} />,
 };

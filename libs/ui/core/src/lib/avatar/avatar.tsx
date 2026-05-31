@@ -8,6 +8,7 @@ import {
   type ReactNode,
 } from 'react';
 
+import { Badge, type BadgeProps } from '../badge';
 import { Icon, type IconName, type IconTheme } from '../icon';
 
 export type AvatarSize = 'sm' | 'md' | 'lg' | 'custom';
@@ -25,6 +26,7 @@ type AvatarCommonProps = {
   shape?: AvatarShape;
   background?: string;
   color?: string;
+  badge?: BadgeProps;
   className?: string;
   style?: CSSProperties;
 } & Omit<HTMLAttributes<HTMLSpanElement>, 'children'>;
@@ -161,6 +163,7 @@ export const Avatar = forwardRef<HTMLSpanElement, AvatarProps>(function Avatar(
     text,
     maxChars = 2,
     textSize,
+    badge,
     onClick,
     ...rest
   } = props as AvatarProps & {
@@ -222,7 +225,7 @@ export const Avatar = forwardRef<HTMLSpanElement, AvatarProps>(function Avatar(
     content = null;
   }
 
-  return (
+  const avatarElement = (
     <span
       ref={ref}
       className={cn(
@@ -239,6 +242,23 @@ export const Avatar = forwardRef<HTMLSpanElement, AvatarProps>(function Avatar(
       {...rest}
     >
       {content}
+    </span>
+  );
+
+  if (badge == null) {
+    return avatarElement;
+  }
+
+  return (
+    <span className="relative inline-flex shrink-0">
+      {avatarElement}
+      <Badge
+        {...badge}
+        className={cn(
+          'absolute top-0 right-0 translate-x-1/2 -translate-y-1/2',
+          badge.className
+        )}
+      />
     </span>
   );
 });
