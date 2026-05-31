@@ -75,7 +75,7 @@ function cn(...classes: Array<string | undefined | false>) {
   return classes.filter(Boolean).join(' ');
 }
 
-function resolveAvatarSize(size: AvatarSize, customSize?: number): number {
+export function resolveAvatarSize(size: AvatarSize, customSize?: number): number {
   if (size === 'custom') {
     if (customSize == null) {
       if (process.env.NODE_ENV !== 'production') {
