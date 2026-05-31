@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import type { ComponentProps, ReactNode } from 'react';
+import { Link as RouterLink, MemoryRouter } from 'react-router-dom';
 
 import { Icon } from '../icon';
 import { Button, type ButtonSize, type ButtonType } from './button';
@@ -190,6 +191,109 @@ export const Link: Story = {
     children: 'Link',
     type: 'link',
   },
+};
+
+export const WithAsProp: Story = {
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'Dùng `as` và `asProps` để render Button dưới dạng thẻ khác (a, span, react-router Link) thay vì `<button>`.',
+      },
+    },
+  },
+  render: () => (
+    <div className="flex flex-col gap-6">
+      <section className="flex flex-col gap-2">
+        <h3 className="text-body-md font-medium text-text">Default button</h3>
+        <Button type="primary">Default button</Button>
+      </section>
+
+      <section className="flex flex-col gap-2">
+        <h3 className="text-body-md font-medium text-text">As anchor</h3>
+        <Button
+          as="a"
+          asProps={{
+            href: 'https://example.com',
+            target: '_blank',
+            rel: 'noreferrer',
+          }}
+          type="primary"
+        >
+          External link
+        </Button>
+      </section>
+
+      <section className="flex flex-col gap-2">
+        <h3 className="text-body-md font-medium text-text">As span</h3>
+        <Button as="span" type="default">
+          Span button
+        </Button>
+      </section>
+
+      <section className="flex flex-col gap-2">
+        <h3 className="text-body-md font-medium text-text">As react-router Link</h3>
+        <MemoryRouter>
+          <Button as={RouterLink} asProps={{ to: '/settings' }} type="link">
+            Go to settings
+          </Button>
+        </MemoryRouter>
+      </section>
+
+      <section className="flex flex-col gap-2">
+        <h3 className="text-body-md font-medium text-text">Disabled as anchor</h3>
+        <Button
+          as="a"
+          asProps={{ href: 'https://example.com' }}
+          type="primary"
+          disabled
+        >
+          Disabled link
+        </Button>
+      </section>
+    </div>
+  ),
+};
+
+export const FullWidth: Story = {
+  parameters: {
+    layout: 'padded',
+    docs: {
+      description: {
+        story:
+          'Truyền `className="w-full"` (hoặc `asProps={{ className: "w-full" }}`) để Button chiếm full width container.',
+      },
+    },
+  },
+  render: () => (
+    <div className="flex w-80 flex-col gap-4">
+      <Button type="primary" className="w-full">
+        Full width button
+      </Button>
+      <Button type="default" className="w-full">
+        Full width default
+      </Button>
+      <Button
+        as="a"
+        asProps={{ href: 'https://example.com', className: 'w-full' }}
+        type="primary"
+      >
+        Full width anchor
+      </Button>
+      <MemoryRouter>
+        <Button
+          as={RouterLink}
+          asProps={{ to: '/settings', className: 'w-full' }}
+          type="link"
+        >
+          Full width Link
+        </Button>
+      </MemoryRouter>
+      <Button type="text" icon={<Icon name="logout" />} className="w-full">
+        Full width with icon
+      </Button>
+    </div>
+  ),
 };
 
 export const Loading: Story = {

@@ -1,8 +1,13 @@
 import {
+  createElement,
   forwardRef,
   type ButtonHTMLAttributes,
+  type ComponentPropsWithoutRef,
+  type ElementType,
+  type MouseEventHandler,
   type ReactNode,
 } from 'react';
+import { Link, type LinkProps } from 'react-router-dom';
 
 import { Icon, type IconSize } from '../icon';
 
@@ -15,6 +20,13 @@ export type ButtonType =
 
 export type ButtonSize = 'sm' | 'md' | 'lg';
 
+export type ButtonAs = typeof Link | 'a' | 'span';
+
+export type ButtonAsProps =
+  | LinkProps
+  | ComponentPropsWithoutRef<'a'>
+  | ComponentPropsWithoutRef<'span'>;
+
 export interface ButtonProps
   extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'type'> {
   type?: ButtonType;
@@ -26,6 +38,8 @@ export interface ButtonProps
   iconOnly?: boolean;
   icon?: ReactNode;
   loading?: boolean;
+  as?: ButtonAs;
+  asProps?: ButtonAsProps;
 }
 
 const baseClasses =
@@ -202,7 +216,21 @@ function cn(...classes: Array<string | undefined | false>) {
   return classes.filter(Boolean).join(' ');
 }
 
-export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
+function getAsElementClasses(as?: ButtonAs) {
+  if (!as) {
+    return undefined;
+  }
+
+  const layoutClasses = 'w-fit self-start';
+
+  if (as === Link || as === 'a') {
+    return cn(layoutClasses, 'no-underline');
+  }
+
+  return layoutClasses;
+}
+
+export const Button = forwardRef<HTMLElement, ButtonProps>(
   function Button(
     {
       className,
@@ -217,18 +245,57 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       loading = false,
       disabled,
       children,
+      as,
+      asProps,
+      onClick,
       ...props
     },
     ref
   ) {
     const appearance = resolveAppearance(danger, ghost);
     const isBorderless = buttonType === 'text' || buttonType === 'link';
+    const isDisabled = disabled || loading;
+    const Component: ElementType = as ?? 'button';
+    const isNativeButton = Component === 'button';
 
-    return (
-      <button
-        ref={ref}
-        type={htmlType}
-        className={cn(
+    const {
+      className: asClassName,
+      onClick: asOnClick,
+      ...restAsProps
+    } = (asProps ?? {}) as {
+      className?: string;
+      onClick?: MouseEventHandler<HTMLElement>;
+    };
+
+    const handleClick: MouseEventHandler<HTMLElement> = (event) => {
+      if (isDisabled) {
+        event.preventDefault();
+        return;
+      }
+
+      asOnClick?.(event);
+      (onClick as MouseEventHandler<HTMLElement> | undefined)?.(event);
+    };
+
+    const content = (
+      <>
+        {loading ? (
+          <Icon name="loading" size={loadingIconSize[size]} spin />
+        ) : (
+          icon
+        )}
+        {loading ? null : children}
+      </>
+    );
+
+    return createElement(
+      Component,
+      {
+        ...restAsProps,
+        ...props,
+        ref,
+        ...(isNativeButton ? { type: htmlType } : null),
+        className: cn(
           baseClasses,
           round ? 'rounded-full' : 'rounded-border',
           iconOnly ? iconOnlySizeClasses[size] : sizeClasses[size],
@@ -236,19 +303,17 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
           !isBorderless &&
             (buttonType === 'dashed' ? 'border-dashed' : 'border-solid'),
           appearanceClasses[appearance][buttonType],
+          getAsElementClasses(as),
+          asClassName,
           className
-        )}
-        disabled={disabled || loading}
-        aria-busy={loading || undefined}
-        {...props}
-      >
-        {loading ? (
-          <Icon name="loading" size={loadingIconSize[size]} spin />
-        ) : (
-          icon
-        )}
-        {loading ? null : children}
-      </button>
+        ),
+        ...(isNativeButton
+          ? { disabled: isDisabled }
+          : { 'aria-disabled': isDisabled || undefined }),
+        'aria-busy': loading || undefined,
+        onClick: isNativeButton ? onClick : handleClick,
+      },
+      content
     );
   }
 );

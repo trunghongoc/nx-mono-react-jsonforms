@@ -1,6 +1,8 @@
 export {
   Button,
   default,
+  type ButtonAs,
+  type ButtonAsProps,
   type ButtonProps,
   type ButtonSize,
   type ButtonType,
