@@ -38,7 +38,6 @@ import {
   prefixFieldPaddingClasses,
   prefixWrapperBorderClasses,
   statusIconConfig,
-  suffixIconPositionClasses,
   type BaseFieldProps,
   type InputSize,
   type InputStatus,
@@ -80,6 +79,8 @@ type SelectSharedProps = BaseFieldProps & {
   menuClassName?: string;
   id?: string;
   required?: boolean;
+  /** When true (default), selected options do not show a check icon in the menu. */
+  hideOptionCheckedIcon?: boolean;
   'aria-describedby'?: string;
 };
 
@@ -160,17 +161,17 @@ function getSuffixPadding({
   hasStatus: boolean;
   hasClear: boolean;
 }) {
-  const iconCount = 1 + (hasStatus ? 1 : 0) + (hasClear ? 1 : 0);
+  const iconCount = (hasStatus ? 1 : 0) + (hasClear ? 1 : 0);
+
+  if (iconCount === 0) {
+    return '';
+  }
 
   if (iconCount === 1) {
     return 'pr-[35px]';
   }
 
-  if (iconCount === 2) {
-    return 'pr-[59px]';
-  }
-
-  return 'pr-[83px]';
+  return 'pr-[59px]';
 }
 
 const suffixIconBaseClasses =
@@ -237,6 +238,7 @@ function SelectRoot(props: SelectProps) {
     error,
     prefix,
     required,
+    hideOptionCheckedIcon = true,
     disabled = false,
     loading = false,
     optionsError = false,
@@ -375,6 +377,14 @@ function SelectRoot(props: SelectProps) {
   const closeMenu = useCallback(() => {
     setOpen(false);
   }, [setOpen]);
+
+  const handleTriggerClick = useCallback(() => {
+    if (disabled) {
+      return;
+    }
+
+    setOpen(!isOpen);
+  }, [disabled, isOpen, setOpen]);
 
   const setSelectedSingleValue = useCallback(
     (nextValue: string) => {
@@ -588,7 +598,7 @@ function SelectRoot(props: SelectProps) {
             >
               {option.label}
             </span>
-            {selected ? (
+            {selected && !hideOptionCheckedIcon ? (
               <Icon
                 name="check"
                 size="sm"
@@ -754,27 +764,13 @@ function SelectRoot(props: SelectProps) {
   const control = (
     <div
       ref={controlRef}
-      className={cn(
-        'group relative inline-flex w-full items-center',
-        baseClasses,
-        multiple ? multipleSizeClasses[size] : inputSizeClasses[size],
-        fieldPaddingClasses,
-        wrapperBorderClasses,
-        className,
-        isOpen &&
-          !disabled &&
-          'border-primary hover:border-primary-hover focus-within:border-primary-hover',
-        loading && !disabled && 'border-primary',
-        disabled &&
-          'cursor-not-allowed border-border bg-bg-container-disabled text-text-disabled hover:border-border focus-within:border-border'
-      )}
+      className="group relative inline-flex w-full items-center"
     >
-      {hasPrefix ? <FieldPrefix prefix={prefix} disabled={disabled} /> : null}
-
       <button
         ref={triggerRef}
         id={selectId}
         type="button"
+        role="combobox"
         disabled={disabled}
         aria-haspopup="listbox"
         aria-expanded={isOpen}
@@ -794,25 +790,61 @@ function SelectRoot(props: SelectProps) {
             menuKeyDownRef.current?.(event);
           }
         }}
-        onClick={() => {
-          if (disabled) {
-            return;
-          }
-
-          setOpen(!isOpen);
-        }}
+        onClick={handleTriggerClick}
         className={cn(
-          'min-w-0 flex-1 border-0 bg-transparent p-0 text-left text-body-md outline-none',
-          multiple
-            ? 'flex flex-wrap items-center gap-size-xxs'
-            : 'truncate',
-          !multiple && (selectedOption ? 'text-text' : 'text-text-placeholder'),
-          'focus:border-transparent focus:shadow-none',
-          disabled && 'cursor-not-allowed text-text-disabled',
+          'flex min-w-0 flex-1 items-center gap-size-xs text-left outline-none',
+          baseClasses,
+          multiple ? multipleSizeClasses[size] : inputSizeClasses[size],
+          fieldPaddingClasses,
+          wrapperBorderClasses,
+          className,
+          isOpen &&
+            !disabled &&
+            'border-primary hover:border-primary-hover focus:border-primary-hover focus-within:border-primary-hover',
+          loading && !disabled && 'border-primary',
+          disabled
+            ? 'cursor-not-allowed border-border bg-bg-container-disabled text-text-disabled hover:border-border focus:border-border focus-within:border-border'
+            : 'cursor-pointer',
           loading && !disabled && 'cursor-progress'
         )}
       >
-        {renderTriggerContent()}
+        {hasPrefix ? <FieldPrefix prefix={prefix} disabled={disabled} /> : null}
+        <span
+          className={cn(
+            'min-w-0 flex-1 text-left',
+            multiple
+              ? 'flex flex-wrap items-center gap-size-xxs'
+              : 'truncate',
+            !multiple &&
+              (selectedOption ? 'text-text' : 'text-text-placeholder')
+          )}
+        >
+          {renderTriggerContent()}
+        </span>
+        <span
+          className={cn(
+            'inline-flex shrink-0 items-center text-icon transition-colors',
+            !disabled &&
+              'group-hover:text-icon-hover group-focus-within:text-icon-hover',
+            isOpen && !disabled && !loading && 'text-primary',
+            loading && !disabled && 'text-primary',
+            disabled && 'text-text-disabled'
+          )}
+          aria-hidden
+        >
+          {loading ? (
+            <Icon name="loading" size="md" spin />
+          ) : (
+            <Icon
+              name="down"
+              size="md"
+              className={cn(
+                'transition-transform',
+                isOpen && !disabled && 'rotate-180'
+              )}
+            />
+          )}
+        </span>
       </button>
 
       {hasStatus ? (
@@ -852,32 +884,6 @@ function SelectRoot(props: SelectProps) {
           <Icon name="close-circle" theme="filled" size="md" />
         </button>
       ) : null}
-
-      <span
-        className={cn(
-          suffixIconPositionClasses,
-          'pointer-events-none inline-flex items-center text-icon transition-colors',
-          !disabled &&
-            'group-hover:text-icon-hover group-focus-within:text-icon-hover',
-          isOpen && !disabled && !loading && 'text-primary',
-          loading && !disabled && 'text-primary',
-          disabled && 'text-text-disabled'
-        )}
-        aria-hidden
-      >
-        {loading ? (
-          <Icon name="loading" size="md" spin />
-        ) : (
-          <Icon
-            name="down"
-            size="md"
-            className={cn(
-              'transition-transform',
-              isOpen && !disabled && 'rotate-180'
-            )}
-          />
-        )}
-      </span>
     </div>
   );
 
