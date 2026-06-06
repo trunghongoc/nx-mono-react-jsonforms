@@ -118,7 +118,7 @@ export function RadioGroup({
   const mappedChildren = collectRadioChildren(children).map((element, index) =>
     cloneElement(
       enhanceRadio(element, name, size, type, danger, disabled),
-      { key: element.key ?? element.props.value ?? index }
+      { key: element.key ?? String(element.props.value ?? index) }
     )
   );
 

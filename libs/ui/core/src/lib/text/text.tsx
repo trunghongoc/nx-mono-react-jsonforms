@@ -2,6 +2,8 @@ import {
   createElement,
   forwardRef,
   type ComponentPropsWithoutRef,
+  type HTMLAttributes,
+  type LabelHTMLAttributes,
   type ReactNode,
 } from 'react';
 
@@ -35,11 +37,8 @@ type TextOwnProps = {
 };
 
 type NativeTextProps = Omit<
-  ComponentPropsWithoutRef<'p'> &
-    ComponentPropsWithoutRef<'span'> &
-    ComponentPropsWithoutRef<'div'> &
-    ComponentPropsWithoutRef<'label'> &
-    ComponentPropsWithoutRef<'h1'>,
+  HTMLAttributes<HTMLElement> &
+    Pick<LabelHTMLAttributes<HTMLLabelElement>, 'htmlFor'>,
   keyof TextOwnProps
 >;
 

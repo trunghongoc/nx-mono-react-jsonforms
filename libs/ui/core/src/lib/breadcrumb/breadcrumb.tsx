@@ -19,7 +19,7 @@ export type BreadcrumbItemConfig = {
   title: ReactNode;
   href?: string;
   icon?: ReactNode | IconName;
-  onClick?: (event: MouseEvent<HTMLAnchorElement>) => void;
+  onClick?: (event: MouseEvent<HTMLAnchorElement | HTMLButtonElement>) => void;
 };
 
 export interface BreadcrumbProps

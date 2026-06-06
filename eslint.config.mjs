@@ -41,7 +41,8 @@ export default [
       '**/*.cjs',
       '**/*.mjs',
     ],
-    // Override or add rules here
-    rules: {},
+    rules: {
+      '@typescript-eslint/no-explicit-any': 'warn',
+    },
   },
 ];
